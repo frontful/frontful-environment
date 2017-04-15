@@ -1,77 +1,165 @@
-import WebpackIsomorphicTools from 'webpack-isomorphic-tools'
-import chokidar from 'chokidar'
-import clearRequireCache from '../utils/clearRequireCache'
+import MemoryFS from 'memory-fs'
+import chalk from 'chalk'
+import commandLineArgs from 'command-line-args'
 import config from '../config'
+import createAssetHandler from '../utils/createAssetHandler'
+import deferred from '../utils/deferred'
+import fsRequire from '../utils/fsRequire'
 import http from 'http'
 import path from 'path'
-import socketIo from 'socket.io'
 import webpack from 'webpack'
-import webpackDevMiddleware from 'webpack-dev-middleware'
-import chalk from 'chalk'
+
+const options = commandLineArgs([{
+  name: 'port',
+  alias: 'p',
+  type: Number,
+  defaultOption: true,
+  defaultValue: 8000,
+}])
 
 process.noDeprecation = true
 process.preserveSymlinks = true
+process.env.PORT = options.port
 
-const compiler = webpack(config.browser.webpack)
-const assets = require('../provider/webpack/config.assets')()
-const cwd = process.cwd()
+class Bundle {
+  constructor(options) {
+    this.options = options
+    this.options.watch = this.options.watch || {
+      aggregateTimeout: 100
+    }
+    this.compiler = webpack(this.options.config)
+    this.compiler.outputFileSystem = this.options.fs || this.compiler.outputFileSystem
+    this.compiled = false
+  }
 
-const devMiddleware = webpackDevMiddleware(compiler, {
-  publicPath: config.browser.webpack.output.publicPath,
-  stats: {
-    children: false,
-    chunkModules: false,
-    chunks: false,
-    colors: true,
-    hash: false,
-    modules: false,
-    timings: true,
-  },
-})
+  build(start, end) {
+    return new Promise((resolve) => {
+      this.compiler.plugin("watch-run", (compiler, next) => {
+        start()
+        next()
+      })
 
-const webpackIsomorphicTools = new WebpackIsomorphicTools(assets).server(cwd, () => {
-  devMiddleware.waitUntilValid(() => {
-    const serverScript = path.resolve(cwd, config.server.script)
-
-    const server = http.createServer((req, res) => {
-      devMiddleware(req, res, () => {
-        devMiddleware.waitUntilValid(() => {
-          require(serverScript)(req, res)
-        })
+      this.compiler.watch(this.options.watch, (error, stats) => {
+        if (stats.hasErrors()) {
+          end(stats)
+        }
+        else {
+          end(stats)
+          if (!this.compiled) {
+            this.compiled = true
+            resolve(stats)
+          }
+        }
       })
     })
+  }
+}
 
-    const listener = server.listen(process.env.PORT || 80, function onStart(err) {
-      if (err) {
-        console.error(err)
-      }
-      else {
-        process.env.PORT = listener.address().port || 80
-        console.log(chalk.bold.green(`Server aviable at`, chalk.underline(`http://localhost:${process.env.PORT}`)))
+class Build {
+  constructor() {
+    this.fs = new MemoryFS()
 
-        const watcher = chokidar.watch([
-          path.resolve(cwd, 'src'),
-          cwd + '/**/frontful-*',
-        ])
+    this.options = {
+      stats: {
+        children: false,
+        chunkModules: false,
+        chunks: false,
+        colors: true,
+        hash: false,
+        modules: false,
+        timings: false,
+        version: false,
+      },
+    }
 
-        watcher.on('ready', function() {
-          const io = socketIo(server)
+    this.server = {
+      bundle: new Bundle({
+        config: config.webpack.server,
+        fs: this.fs,
+      }),
+      filename: path.resolve(config.webpack.server.output.path, 'server.js'),
+      requestHandler: null,
+      httpServer: null,
+      compile: null,
+      stats: null,
+    }
 
-          io.on('connection', function(socket) {
-            console.log(chalk.gray('Browser connected'))
-            io.emit('coldreload', 'connected', {for: 'everyone'})
-            socket.on('disconnect', function(){
-              console.log(chalk.gray('Browser disconnected'))
-            })
-          })
+    this.browser = {
+      bundle: new Bundle({
+        config: config.webpack.browser,
+        fs: this.fs,
+      }),
+      compile: null,
+      stats: null,
+    }
 
-          watcher.on('all', function() {
-            clearRequireCache()
-            webpackIsomorphicTools.refresh()
-            io.emit('coldreload', 'reload', {for: 'everyone'})
-          })
+    this.compiled = false
+  }
+
+  startHandler(bundle) {
+    if (this[bundle].compile) {
+      this[bundle].compile.reject()
+    }
+
+    this[bundle].compile = deferred()
+
+    if (this.server.compile && this.browser.compile) {
+      Promise.all([this.server.compile.promise, this.browser.compile.promise]).then((stats) => {
+        const {0: serverStats, 1: browserStats} = stats
+
+        if (serverStats.hasErrors() && (!this.browser.stats || !this.browser.stats.hasErrors())) {
+          console.log(serverStats.toString({...this.options.stats, assets: false}))
+        }
+        else if (browserStats.hasErrors() && (!this.server.stats || !this.server.stats.hasErrors())) {
+          console.log(browserStats.toString({...this.options.stats, assets: false}))
+        }
+        else {
+          if (this.compiled) {
+            console.log(chalk.green(`Rebuild successfull`))
+            this.server.requestHandler = fsRequire(this.fs, this.server.filename)
+          }
+        }
+
+        this.server.stats = serverStats
+        this.browser.stats = browserStats
+      }).catch((e) => console.log(e))
+    }
+  }
+
+  endHandler(bundle, stats) {
+    this[bundle].compile.resolve(stats)
+  }
+
+  run() {
+    Promise.all([
+      this.server.bundle.build(
+        this.startHandler.bind(this, 'server'),
+        this.endHandler.bind(this, 'server')
+      ),
+      this.browser.bundle.build(
+        this.startHandler.bind(this, 'browser'),
+        this.endHandler.bind(this, 'browser')
+      ),
+    ]).then((stats) => {
+      console.log(stats[1].toString(this.options.stats))
+      console.log(chalk.bold.green(`Build successfull`))
+
+      this.server.requestHandler = fsRequire(this.fs, this.server.filename)
+      const assetHandler = createAssetHandler(this.fs)
+
+      this.server.httpServer = http.createServer((req, res) => {
+        assetHandler(req, res, () => {
+          this.server.requestHandler(req, res)
         })
-      }
-    })
-  })
-})
+      })
+
+      this.server.httpServer.listen(process.env.PORT, (error) => {
+        console[error ? 'error' : 'log'](error || chalk.bold.green(`Server started on port ${process.env.PORT}`))
+      })
+    }).then(() => {
+      this.compiled = true
+    }).catch((e) => console.log(e))
+  }
+}
+
+new Build().run()

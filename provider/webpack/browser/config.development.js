@@ -1,34 +1,33 @@
-const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin')
-const hash = require('../../utils/hash')
 const path = require('path')
 const webpack = require('webpack')
 
-const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./config.assets')())
-
 module.exports = function provider(options) {
   options = Object.assign({
-    babel: require('babel-preset-frontful'),
+    babel: require('babel-preset-frontful/browser'),
     cache: true,
-    entry: null,
+    script: './src/browser/index.js',
     sourceMaps: true,
   }, options)
 
   const cwd = process.cwd()
 
   return {
+    cache: options.cache,
     context: cwd,
     devtool: options.sourceMaps && 'eval-source-map',
+    target: 'web',
     stats: {
       children: false,
     },
     performance: {
       hints: false,
     },
-    cache: options.cache,
-    entry: options.entry,
+    entry: {
+      main: [options.script]
+    },
     output: {
-      path: path.resolve(cwd, 'build'),
-      filename: `${hash()}.[name].js`,
+      path: path.resolve(cwd, 'build/browser'),
+      filename: `[name].js`,
       publicPath: '/assets/',
     },
     plugins: [
@@ -40,7 +39,6 @@ module.exports = function provider(options) {
           IS_BROWSER: JSON.stringify(true),
         },
       }),
-      webpackIsomorphicToolsPlugin,
     ],
     module: {
       rules: [
@@ -53,8 +51,8 @@ module.exports = function provider(options) {
           }),
         },
         {
-          test: webpackIsomorphicToolsPlugin.regexp('img'),
-          loader: 'url-loader?limit=1024',
+          test: /\.(png|jpe?g|gif|ico|svg)$/i,
+          loader: 'url-loader?limit=10240',
         },
         {
           test: /\.json$/,
@@ -63,7 +61,7 @@ module.exports = function provider(options) {
       ],
     },
     resolve: {
-      extensions: ['.js', '.jsx', '.json'],
+      extensions: ['.js', '.jsx'],
       symlinks: false,
       modules: [
         cwd + '/node_modules',
