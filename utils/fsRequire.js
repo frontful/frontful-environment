@@ -1,12 +1,18 @@
 const path = require('path')
+const fileSystem = require('fs')
 
 module.exports = function fsRequire(fs, filename) {
+  fs = fs || fileSystem
+
+  const modulesPaths = module.paths.slice()
+  modulesPaths.unshift(path.resolve(process.cwd(), 'node_modules'))
+
   var content = fs.readFileSync(filename, 'utf8')
   var Module = module.constructor
   var _module = new Module()
-  const paths = module.paths.slice()
-  paths.unshift(path.resolve(process.cwd(), 'node_modules'))
-  _module.paths = paths
+
+  _module.paths = modulesPaths
   _module._compile(content, filename)
+
   return _module.exports
 }

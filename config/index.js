@@ -22,6 +22,8 @@ const mergedConfig = {
     ),
     hash: hash,
   },
+  modules: defaultConfig.modules,
+  port: defaultConfig.port,
 }
 
 module.exports = mergedConfig

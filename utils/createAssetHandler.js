@@ -1,8 +1,11 @@
 import config from '../config'
 import {parse} from 'url'
 import {resolve} from 'path'
+import fileSystem from 'fs'
 
 export default function createAssetHandler(fs) {
+  fs = fs || fileSystem
+
   function sendAsset(url, res, environment = 'browser') {
     try {
       const pathPublic = config.webpack[environment].output.publicPath
@@ -24,7 +27,7 @@ export default function createAssetHandler(fs) {
   return function assetHandler(req, res, next) {
     try {
       const url = parse(req.url)
-      const isAssetSent = sendAsset(url, res, 'browser') || sendAsset(url, res, 'server')
+      const isAssetSent = sendAsset(url, res, 'browser')
       if (!isAssetSent) {
         next()
       }

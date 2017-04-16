@@ -25,7 +25,7 @@ module.exports = function provider(options) {
       hints: false,
     },
     entry: {
-      server: options.script,
+      'index': options.script,
     },
     output: {
       path: path.resolve(cwd, 'build/server'),
