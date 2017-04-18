@@ -64,6 +64,7 @@ module.exports = function provider(options) {
     },
     resolve: {
       extensions: ['.js', '.jsx'],
+      mainFields: ['jsnext:main', 'browser', 'main'],
       symlinks: false,
       modules: [
         cwd + '/node_modules',

@@ -1,13 +1,13 @@
 import Bundle from './Bundle'
+import Coldreload from '../../utils/coldreload/server'
 import MemoryFS from 'memory-fs'
 import Modules from './Modules'
 import chalk from 'chalk'
 import config from '../../config'
-import createAssetHandler from '../../utils/createAssetHandler'
 import deferred from '../../utils/deferred'
 import fsRequire from '../../utils/fsRequire'
-import http from 'http'
 import path from 'path'
+import server from '../../utils/server'
 
 process.env.PORT = config.port
 
@@ -51,6 +51,8 @@ export default class Development {
 
     this.compiled = false
     this.compile = null
+
+    this.coldreload = null
   }
 
   startHandler(bundle) {
@@ -77,8 +79,9 @@ export default class Development {
         }
         else {
           if (this.compiled) {
-            console.log(chalk.gray(`Application rebuilt`))
+            console.log(chalk.green(`Application rebuilt`))
             this.server.requestHandler = fsRequire(this.fs, this.server.filename)
+            this.coldreload.reload()
           }
         }
 
@@ -99,11 +102,11 @@ export default class Development {
 
   start() {
     Promise.all([
-      this.server.bundle.build(
+      this.server.bundle.watch(
         this.startHandler.bind(this, 'server'),
         this.endHandler.bind(this, 'server')
       ),
-      this.browser.bundle.build(
+      this.browser.bundle.watch(
         this.startHandler.bind(this, 'browser'),
         this.endHandler.bind(this, 'browser')
       ),
@@ -112,19 +115,14 @@ export default class Development {
       console.log(chalk.bold.green(`Application built`))
 
       this.server.filename = path.resolve(config.webpack.server.output.path, stats[0].compilation.entrypoints.index.chunks[0].files[0])
-
       this.server.requestHandler = fsRequire(this.fs, this.server.filename)
-      const assetHandler = createAssetHandler(this.fs)
 
-      this.server.httpServer = http.createServer((req, res) => {
-        assetHandler(req, res, () => {
-          this.server.requestHandler(req, res)
-        })
+      const httpServer = server((req, res) => this.server.requestHandler(req, res), {
+        fs: this.fs,
+        assets: true,
       })
 
-      this.server.httpServer.listen(process.env.PORT, (error) => {
-        console[error ? 'error' : 'log'](error || chalk.bold.green(`Server started on port ${process.env.PORT}`))
-      })
+      this.coldreload = new Coldreload(httpServer)
     }).then(() => {
       this.compiled = true
       new Modules().watch(() => {

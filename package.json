@@ -1,6 +1,6 @@
 {
   "name": "frontful-environment",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "private": false,
   "description": "Toolkit for providing environment setup and abstraction over e.g. Webpack, Babel, Eslint",
   "license": "MIT",
@@ -29,6 +29,9 @@
     "lodash.uniq": "^4.5.0",
     "memory-fs": "^0.4.1",
     "object-path": "^0.11.4",
+    "rimraf": "^2.6.1",
+    "socket.io": "^1.7.3",
+    "socket.io-client": "^1.7.3",
     "url-loader": "^0.5.8",
     "webpack": "^2.3.3",
     "webpack-node-externals": "^1.5.4"

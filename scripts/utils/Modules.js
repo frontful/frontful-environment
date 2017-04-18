@@ -53,7 +53,7 @@ export default class Modules {
 
     if (cleared) {
       queue.forEach((moduleName) => {
-        console.log(chalk.gray(`Module ${moduleName} reloaded`))
+        console.log(chalk.magenta(`Module ${moduleName} reloaded`))
       })
       if (this.callback) {
         this.callback()

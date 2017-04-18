@@ -14,5 +14,7 @@ module.exports = function fsRequire(fs, filename) {
   _module.paths = modulesPaths
   _module._compile(content, filename)
 
+  content = null
+
   return _module.exports
 }

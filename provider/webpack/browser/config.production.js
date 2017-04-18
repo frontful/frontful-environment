@@ -6,7 +6,7 @@ module.exports = function provider(options) {
     babel: require('babel-preset-frontful/browser'),
     cache: false,
     script: './src/browser/index.js',
-    sourceMaps: false,
+    sourceMaps: true,
   }, options)
 
   const cwd = process.cwd()
@@ -70,6 +70,7 @@ module.exports = function provider(options) {
     },
     resolve: {
       extensions: ['.js', '.jsx'],
+      mainFields: ['jsnext:main', 'browser', 'main'],
       symlinks: false,
       modules: [
         cwd + '/node_modules',

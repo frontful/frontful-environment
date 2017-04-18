@@ -14,13 +14,20 @@ export default class Bundle {
     this.watcher = null
   }
 
-  rebuild() {
-    if (this.compiled) {
-      this.watcher.invalidate(() => {})
-    }
+  build() {
+    return new Promise((resolve, reject) => {
+      this.compiler.watch(this.options.watch, (error, stats) => {
+        if (stats.hasErrors()) {
+          reject(new Error(stats.toString()))
+        }
+        else {
+          resolve(stats)
+        }
+      })
+    })
   }
 
-  build(start, end) {
+  watch(start, end) {
     return new Promise((resolve) => {
       this.compiler.plugin("watch-run", (compiler, next) => {
         start()
@@ -44,5 +51,11 @@ export default class Bundle {
         }
       })
     })
+  }
+
+  rebuild() {
+    if (this.compiled) {
+      this.watcher.invalidate(() => {})
+    }
   }
 }

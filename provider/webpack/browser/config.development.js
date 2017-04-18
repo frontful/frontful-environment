@@ -23,7 +23,10 @@ module.exports = function provider(options) {
       hints: false,
     },
     entry: {
-      main: [options.script]
+      main: [
+        require.resolve('../../../utils/coldreload/browser.js'),
+        options.script,
+      ]
     },
     output: {
       path: path.resolve(cwd, 'build/browser'),
@@ -62,6 +65,7 @@ module.exports = function provider(options) {
     },
     resolve: {
       extensions: ['.js', '.jsx'],
+      mainFields: ['jsnext:main', 'browser', 'main'],
       symlinks: false,
       modules: [
         cwd + '/node_modules',

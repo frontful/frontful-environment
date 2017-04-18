@@ -7,7 +7,7 @@ module.exports = function provider(options) {
     babel: require('babel-preset-frontful/server'),
     cache: false,
     script: './src/server/index.js',
-    sourceMaps: false,
+    sourceMaps: true,
   }, options)
 
   const cwd = process.cwd()
@@ -25,7 +25,7 @@ module.exports = function provider(options) {
       hints: false,
     },
     entry: {
-      index: options.script,
+      server: options.script,
     },
     output: {
       path: path.resolve(cwd, 'build/browser'),
@@ -34,6 +34,11 @@ module.exports = function provider(options) {
       libraryTarget: "commonjs-module",
     },
     plugins: [
+      new webpack.BannerPlugin({
+        banner: `require('source-map-support').install();`,
+        raw: true,
+        entryOnly: false,
+      }),
       new webpack.optimize.OccurrenceOrderPlugin(),
       new webpack.DefinePlugin({
         'process.env': {
@@ -61,6 +66,7 @@ module.exports = function provider(options) {
     },
     resolve: {
       extensions: ['.js', '.jsx'],
+      mainFields: ['jsnext:main', 'browser', 'main'],
       symlinks: false,
       modules: [
         cwd + '/node_modules',
