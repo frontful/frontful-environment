@@ -1,6 +1,6 @@
 import Bundle from './Bundle'
 import MemoryFS from 'memory-fs'
-import ModuleReloader from './ModuleReloader'
+import Modules from './Modules'
 import chalk from 'chalk'
 import config from '../../config'
 import createAssetHandler from '../../utils/createAssetHandler'
@@ -11,7 +11,7 @@ import path from 'path'
 
 process.env.PORT = config.port
 
-export default class Environment {
+export default class Development {
   constructor() {
     this.fs = new MemoryFS()
 
@@ -92,13 +92,18 @@ export default class Environment {
     this[bundle].compile.resolve(stats)
   }
 
-  run() {
+  rebuild() {
+    this.server.bundle.rebuild()
+    this.browser.bundle.rebuild()
+  }
+
+  start() {
     Promise.all([
-      this.server.bundle.run(
+      this.server.bundle.build(
         this.startHandler.bind(this, 'server'),
         this.endHandler.bind(this, 'server')
       ),
-      this.browser.bundle.run(
+      this.browser.bundle.build(
         this.startHandler.bind(this, 'browser'),
         this.endHandler.bind(this, 'browser')
       ),
@@ -122,7 +127,9 @@ export default class Environment {
       })
     }).then(() => {
       this.compiled = true
-      new ModuleReloader().run()
+      new Modules().watch(() => {
+        this.rebuild()
+      })
     }).catch((e) => console.log(e))
   }
 }

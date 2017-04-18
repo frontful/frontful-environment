@@ -5,14 +5,13 @@ const command = process.argv[2]
 
 switch(command) {
   case 'start': {
-    require('./start')
+    require('../scripts/start')
     break
   }
   case 'build': {
-    require('./build')
+    require('../scripts/build')
     break
   }
   default: {
-    console.log('Unknown command')
   }
 }

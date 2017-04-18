@@ -1,6 +1,3 @@
-import Environment from './utils/Environment'
+import Development from './utils/Development'
 
-
-
-
-new Environment().run()
+new Development().start()

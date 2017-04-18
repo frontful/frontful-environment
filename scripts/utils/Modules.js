@@ -7,13 +7,16 @@ import uniq from 'lodash.uniq'
 
 process.preserveSymlinks = true
 
-export default class ModuleReloader {
+export default class Modules {
   constructor() {
     this.queue = []
     this.clearCache = debouce(this.clearCache, 300)
+    this.callback = null
   }
 
-  run() {
+  watch(callback) {
+    this.callback = callback
+
     this.watcher = chokidar.watch(config.modules, {
       cwd: path.resolve(process.cwd(), 'node_modules'),
       ignoreInitial: true,
@@ -35,19 +38,26 @@ export default class ModuleReloader {
 
   clearCache() {
     const queue = uniq(this.queue)
+    let cleared = false
     this.queue = []
 
     Object.keys(require.cache).forEach(function(id) {
       for(let i = 0, l = queue.length; i < l; i++) {
-        if (id.indexOf('node_modules/' + queue[i]) !== -1 && id.indexOf(queue[i] + '/node_modules') === -1) {
+        if (id.indexOf('/' + queue[i] + '/') !== -1 && id.indexOf('/' + queue[i] + '/node_modules/') === -1) {
           delete require.cache[id]
+          cleared = true
           break
         }
       }
     })
 
-    queue.forEach((moduleName) => {
-      console.log(chalk.gray(`Module ${moduleName} reloaded`))
-    })
+    if (cleared) {
+      queue.forEach((moduleName) => {
+        console.log(chalk.gray(`Module ${moduleName} reloaded`))
+      })
+      if (this.callback) {
+        this.callback()
+      }
+    }
   }
 }

@@ -25,11 +25,11 @@ module.exports = function provider(options) {
       hints: false,
     },
     entry: {
-      'index': options.script,
+      index: options.script,
     },
     output: {
-      path: path.resolve(cwd, 'build/server'),
-      filename: `[name].js`,
+      path: path.resolve(cwd, 'build/browser'),
+      filename: `../server/[name].js`,
       publicPath: '/assets/',
       libraryTarget: "commonjs-module",
     },

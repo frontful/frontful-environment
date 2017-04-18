@@ -14,7 +14,13 @@ export default class Bundle {
     this.watcher = null
   }
 
-  run(start, end) {
+  rebuild() {
+    if (this.compiled) {
+      this.watcher.invalidate(() => {})
+    }
+  }
+
+  build(start, end) {
     return new Promise((resolve) => {
       this.compiler.plugin("watch-run", (compiler, next) => {
         start()
