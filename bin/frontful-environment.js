@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-require('babel-register')(require('babel-preset-frontful'))
+require('babel-register')(require('babel-preset-frontful/server'))
 
 const command = process.argv[2]
 

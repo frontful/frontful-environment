@@ -1,18 +1,17 @@
 module.exports = {
-  webpack: {
-    server: {
-      options: null,
-      config: null,
-    },
-    browser: {
+  server: {
+    index: './src/server/index.js',
+    port: 8000,
+    webpack: {
       options: null,
       config: null,
     },
   },
-  modules: [
-    'frontful-environment',
-    'babel-preset-frontful',
-    'eslint-config-frontful',
-  ],
-  port: 8000,
+  browser: {
+    index: './src/browser/index.js',
+    webpack: {
+      options: null,
+      config: null,
+    },
+  },
 }

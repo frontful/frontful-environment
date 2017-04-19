@@ -1,8 +1,8 @@
 {
   "name": "frontful-environment",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "private": false,
-  "description": "Toolkit for providing environment setup and abstraction over e.g. Webpack, Babel, Eslint",
+  "description": "Environment abstraction provider for effortless and sustainable frontend project development",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
     "chokidar": "^1.6.1",
     "eslint-config-frontful": "0.x || 1.x",
     "file-loader": "^0.11.1",
+    "frontful-common": "0.x || 1.x",
     "frontful-config": "0.x || 1.x",
     "json-loader": "^0.5.4",
     "lodash.debounce": "^4.0.8",

@@ -5,7 +5,7 @@ import fs from 'fs'
 import path from 'path'
 import rimraf from 'rimraf'
 
-export default class Development {
+export default class Build {
   constructor() {
     this.options = {
       stats: {
@@ -22,13 +22,13 @@ export default class Development {
 
     this.server = {
       bundle: new Bundle({
-        config: config.webpack.server,
+        config: config.server.webpack,
       }),
     }
 
     this.browser = {
       bundle: new Bundle({
-        config: config.webpack.browser,
+        config: config.browser.webpack,
       }),
     }
   }
@@ -40,17 +40,15 @@ export default class Development {
       this.browser.bundle.build(),
     ]).then(() => {
       console.log(chalk.bold.green(`Application built`))
-      const serverIndexPath = path.resolve(process.cwd(), 'build/server/index.js')
+      const serverIndexPath = path.resolve(process.cwd(), './build/server/index.js')
       fs.writeFileSync(serverIndexPath, `
         process.env.NODE_ENV = 'production';
         require('frontful-config');
         var requestListener = require('./server.js');
         require('frontful-environment/utils/server')(requestListener, {assets: true});
       `)
-      process.exit(0)
     }).catch((error) => {
       console.error(error)
-      process.exit(1)
     })
   }
 }

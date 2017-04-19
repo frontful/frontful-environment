@@ -17,7 +17,7 @@ export default class Modules {
   watch(callback) {
     this.callback = callback
 
-    this.watcher = chokidar.watch(config.modules, {
+    this.watcher = chokidar.watch(config.packages, {
       cwd: path.resolve(process.cwd(), 'node_modules'),
       ignoreInitial: true,
       ignored: /node_modules.*node_modules/,

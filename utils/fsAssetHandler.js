@@ -5,8 +5,8 @@ const resolve = require('path').resolve
 
 function sendAsset(fs, url, res, environment = 'browser') {
   try {
-    const pathPublic = config.webpack[environment].output.publicPath
-    const path = config.webpack[environment].output.path
+    const pathPublic = config[environment].webpack.output.publicPath
+    const path = config[environment].webpack.output.path
 
     if (url.pathname.indexOf(pathPublic) === 0) {
       const filename = resolve(path, url.pathname.replace(pathPublic, ''))

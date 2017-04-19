@@ -16,9 +16,9 @@ export default class Bundle {
 
   build() {
     return new Promise((resolve, reject) => {
-      this.compiler.watch(this.options.watch, (error, stats) => {
-        if (stats.hasErrors()) {
-          reject(new Error(stats.toString()))
+      this.compiler.run((error, stats) => {
+        if (error || stats.hasErrors()) {
+          reject(stats ? new Error(stats.toString()) : error)
         }
         else {
           resolve(stats)

@@ -8,7 +8,7 @@ import fsRequire from '../../utils/fsRequire'
 import path from 'path'
 import server from '../../utils/server'
 
-process.env.PORT = config.port
+process.env.PORT = config.server.port
 
 export default class Development {
   constructor() {
@@ -29,7 +29,7 @@ export default class Development {
 
     this.server = {
       bundle: new Bundle({
-        config: config.webpack.server,
+        config: config.server.webpack,
         fs: this.fs,
       }),
       filename: null,
@@ -41,7 +41,7 @@ export default class Development {
 
     this.browser = {
       bundle: new Bundle({
-        config: config.webpack.browser,
+        config: config.browser.webpack,
         fs: this.fs,
       }),
       compile: null,
@@ -114,7 +114,7 @@ export default class Development {
       require('frontful-config')
       require('../../utils/coldreload/server')
 
-      this.server.filename = path.resolve(config.webpack.server.output.path, stats[0].compilation.entrypoints.index.chunks[0].files[0])
+      this.server.filename = path.resolve(config.server.webpack.output.path, stats[0].compilation.entrypoints.server.chunks[0].files[0])
       this.server.requestHandler = fsRequire(this.fs, this.server.filename)
 
       const httpServer = server((req, res) => this.server.requestHandler(req, res), {

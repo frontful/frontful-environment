@@ -1,2 +1,2 @@
 const config = require('../')
-module.exports = config.webpack.server
+module.exports = config.server.webpack

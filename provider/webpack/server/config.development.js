@@ -1,3 +1,4 @@
+const commonConfig = require('frontful-common/config')
 const nodeExternals = require('webpack-node-externals')
 const path = require('path')
 const webpack = require('webpack')
@@ -6,7 +7,7 @@ module.exports = function provider(options) {
   options = Object.assign({
     babel: require('babel-preset-frontful/server'),
     cache: true,
-    script: './src/server/index.js',
+    index: './src/server/index.js',
     sourceMaps: true,
   }, options)
 
@@ -25,13 +26,13 @@ module.exports = function provider(options) {
       hints: false,
     },
     entry: {
-      index: [
-        options.script,
+      server: [
+        options.index,
       ],
     },
     output: {
-      path: path.resolve(cwd, 'build/browser'),
-      filename: `../server/[name].js`,
+      path: path.resolve(cwd, './build/browser/assets/'),
+      filename: `../../server/[name].js`,
       publicPath: '/assets/',
       libraryTarget: "commonjs-module",
     },
@@ -48,7 +49,7 @@ module.exports = function provider(options) {
       rules: [
         {
           test: /\.jsx?$/,
-          exclude: /node_modules\/(?!(frontful-.*)\/).*/,
+          exclude: new RegExp(`node_modules/(?!(${commonConfig.packages.join('|')})/)`),
           loader: 'babel-loader',
           query: Object.assign({}, options.babel, {
             cacheDirectory: options.cache,

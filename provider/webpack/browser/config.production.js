@@ -1,3 +1,4 @@
+const commonConfig = require('frontful-common/config')
 const path = require('path')
 const webpack = require('webpack')
 
@@ -5,7 +6,7 @@ module.exports = function provider(options) {
   options = Object.assign({
     babel: require('babel-preset-frontful/browser'),
     cache: false,
-    script: './src/browser/index.js',
+    index: './src/browser/index.js',
     sourceMaps: true,
   }, options)
 
@@ -25,11 +26,11 @@ module.exports = function provider(options) {
     entry: {
       main: [
         require.resolve('../../../utils/coldreload/browser.js'),
-        options.script
+        options.index,
       ]
     },
     output: {
-      path: path.resolve(cwd, 'build/browser'),
+      path: path.resolve(cwd, './build/browser/assets/'),
       filename: `[name].js`,
       publicPath: '/assets/',
     },
@@ -57,7 +58,7 @@ module.exports = function provider(options) {
       rules: [
         {
           test: /\.jsx?$/,
-          exclude: /node_modules\/(?!(frontful-.*)\/).*/,
+          exclude: new RegExp(`node_modules/(?!(${commonConfig.packages.join('|')})/)`),
           loader: 'babel-loader',
           query: options.babel,
         },
