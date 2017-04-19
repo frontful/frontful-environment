@@ -38,16 +38,14 @@ export default class Development {
     Promise.all([
       this.server.bundle.build(),
       this.browser.bundle.build(),
-    ]).then((stats) => {
-      console.log(stats[0].toString(this.options.stats))
-      console.log(stats[1].toString(this.options.stats))
+    ]).then(() => {
       console.log(chalk.bold.green(`Application built`))
       const serverIndexPath = path.resolve(process.cwd(), 'build/server/index.js')
       fs.writeFileSync(serverIndexPath, `
         process.env.NODE_ENV = 'production';
-        require('frontful-environment/utils/server')(require('./server.js'), {
-          assets: true
-        });
+        require('frontful-config');
+        var requestListener = require('./server.js');
+        require('frontful-environment/utils/server')(requestListener, {assets: true});
       `)
       process.exit(0)
     }).catch((error) => {

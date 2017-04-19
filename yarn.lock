@@ -1341,8 +1341,8 @@ ecc-jsbn@~0.1.1:
     jsbn "~0.1.0"
 
 electron-to-chromium@^1.2.7:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.3.tgz#651eb63fe89f39db70ffc8dbd5d9b66958bc6a0e"
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.4.tgz#e51769c0cf550e0cf5aedf6aa2b803a264b3a900"
 
 elliptic@^6.0.0:
   version "6.4.0"
@@ -1791,8 +1791,8 @@ form-data@~2.1.1:
     mime-types "^2.1.12"
 
 "frontful-config@0.x || 1.x":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/frontful-config/-/frontful-config-0.0.5.tgz#9592ecd5a9b2bfc961a8abb141f25f7d82af9bf6"
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/frontful-config/-/frontful-config-0.0.6.tgz#393af555121eb1c31940d851db681d6a14158a8c"
   dependencies:
     deep-extend "^0.4.1"
     js-yaml "^3.8.3"
@@ -2057,8 +2057,8 @@ inquirer@^0.12.0:
     through "^2.3.6"
 
 interpret@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.0.2.tgz#f4f623f0bb7122f15f5717c8e254b8161b5c5b2d"
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.0.3.tgz#cbc35c62eeee73f19ab7b10a801511401afc0f90"
 
 invariant@^2.2.0, invariant@^2.2.2:
   version "2.2.2"
@@ -2560,13 +2560,9 @@ oauth-sign@~0.8.1:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.8.2.tgz#46a6ab7f0aead8deae9ec0565780b7d4efeb9d43"
 
-object-assign@4.1.0:
+object-assign@4.1.0, object-assign@^4.0.1, object-assign@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.0.tgz#7a3b3d0e98063d43f4c03f2e8ae6cd51a86883a0"
-
-object-assign@^4.0.1, object-assign@^4.1.0:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
 
 object-component@0.0.3:
   version "0.0.3"

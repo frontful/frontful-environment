@@ -25,7 +25,9 @@ module.exports = function provider(options) {
       hints: false,
     },
     entry: {
-      index: options.script,
+      index: [
+        options.script,
+      ],
     },
     output: {
       path: path.resolve(cwd, 'build/browser'),
@@ -54,7 +56,7 @@ module.exports = function provider(options) {
         },
         {
           test: /\.(png|jpe?g|gif|ico|svg)$/i,
-          loader: 'url-loader?limit=10240',
+          loader: 'url-loader?limit=1024',
         },
         {
           test: /\.json$/,

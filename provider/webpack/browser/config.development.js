@@ -55,7 +55,7 @@ module.exports = function provider(options) {
         },
         {
           test: /\.(png|jpe?g|gif|ico|svg)$/i,
-          loader: 'url-loader?limit=10240',
+          loader: 'url-loader?limit=1024',
         },
         {
           test: /\.json$/,

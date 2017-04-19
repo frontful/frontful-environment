@@ -1,5 +1,4 @@
 import Bundle from './Bundle'
-import Coldreload from '../../utils/coldreload/server'
 import MemoryFS from 'memory-fs'
 import Modules from './Modules'
 import chalk from 'chalk'
@@ -51,8 +50,6 @@ export default class Development {
 
     this.compiled = false
     this.compile = null
-
-    this.coldreload = null
   }
 
   startHandler(bundle) {
@@ -80,8 +77,9 @@ export default class Development {
         else {
           if (this.compiled) {
             console.log(chalk.green(`Application rebuilt`))
+            require('frontful-config')
             this.server.requestHandler = fsRequire(this.fs, this.server.filename)
-            this.coldreload.reload()
+            global.frontful.environment.coldreload.reload()
           }
         }
 
@@ -111,8 +109,10 @@ export default class Development {
         this.endHandler.bind(this, 'browser')
       ),
     ]).then((stats) => {
-      console.log(stats[1].toString(this.options.stats))
       console.log(chalk.bold.green(`Application built`))
+
+      require('frontful-config')
+      require('../../utils/coldreload/server')
 
       this.server.filename = path.resolve(config.webpack.server.output.path, stats[0].compilation.entrypoints.index.chunks[0].files[0])
       this.server.requestHandler = fsRequire(this.fs, this.server.filename)
@@ -122,7 +122,7 @@ export default class Development {
         assets: true,
       })
 
-      this.coldreload = new Coldreload(httpServer)
+      global.frontful.environment.coldreload.start(httpServer)
     }).then(() => {
       this.compiled = true
       new Modules().watch(() => {

@@ -25,9 +25,9 @@ module.exports = function (handler, options) {
   })
 
   global.frontful = global.frontful || {}
-  global.frontful.enviroment = global.frontful.enviroment || {}
-  global.frontful.enviroment.server = server
-  global.frontful.enviroment.listener = listener
+  global.frontful.environment = global.frontful.environment || {}
+  global.frontful.environment.server = server
+  global.frontful.environment.listener = listener
 
   return server
 }

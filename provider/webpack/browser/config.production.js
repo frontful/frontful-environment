@@ -23,7 +23,10 @@ module.exports = function provider(options) {
       hints: false,
     },
     entry: {
-      main: [options.script]
+      main: [
+        require.resolve('../../../utils/coldreload/browser.js'),
+        options.script
+      ]
     },
     output: {
       path: path.resolve(cwd, 'build/browser'),
@@ -60,7 +63,7 @@ module.exports = function provider(options) {
         },
         {
           test: /\.(png|jpe?g|gif|ico|svg)$/i,
-          loader: 'url-loader?limit=10240',
+          loader: 'url-loader?limit=1024',
         },
         {
           test: /\.json$/,

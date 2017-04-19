@@ -1,54 +1,64 @@
-import socketio from 'socket.io-client'
+let Coldreload
 
-class Coldreload {
-  constructor() {
-    this.socket = socketio()
+if (process.env.NODE_ENV !== 'production') {
+  const socketio = require('socket.io-client')
 
-    this.socket.on('connect', () => {
-      this.log('Server connected')
-    })
+  Coldreload = class {
+    constructor() {
+      this.socket = socketio()
 
-    this.socket.on('frontful.coldreload.reload', () => {
-      if (this.serializer) {
-        const data = this.serializer()
-        localStorage.setItem('frontful.coldreload.state', JSON.stringify(data))
-        this.socket.emit('frontful.coldreload.state', data, () => {
+      this.socket.on('connect', () => {
+        this.log('Server connected')
+      })
+
+      this.socket.on('frontful.coldreload.reload', () => {
+        if (this.serializer) {
+          const data = this.serializer()
+          localStorage.setItem('frontful.coldreload.state', JSON.stringify(data))
+          this.socket.emit('frontful.coldreload.state', data, () => {
+            window.location.reload()
+          })
+          this.log('State stored and serialize')
+        }
+        else {
           window.location.reload()
-        })
-        this.log('State stored and serialize')
+        }
+      })
+    }
+
+    serializer = null
+
+    get deserializer() {
+      return this._deserializer
+    }
+
+    set deserializer(deserializer) {
+      this._deserializer = deserializer
+      this.deserialize()
+    }
+
+    deserialize() {
+      const strData = localStorage.getItem('frontful.coldreload.state')
+      localStorage.setItem('frontful.coldreload.state', '')
+      const data = strData ? JSON.parse(strData) : null
+      if (data) {
+        this.deserializer(data)
+        this.log('State restored and deserialize')
       }
-      else {
-        window.location.reload()
-      }
-    })
-  }
+    }
 
-  serializer = null
-
-  get deserializer() {
-    return this._deserializer
-  }
-
-  set deserializer(deserializer) {
-    this._deserializer = deserializer
-    this.deserialize()
-  }
-
-  deserialize() {
-    const strData = localStorage.getItem('frontful.coldreload.state')
-    localStorage.setItem('frontful.coldreload.state', '')
-    const data = strData ? JSON.parse(strData) : null
-    if (data) {
-      this.deserializer(data)
-      this.log('State restored and deserialize')
+    log(text) {
+      console.log(`%c${text}`, 'color: gray;')
     }
   }
-
-  log(text) {
-    console.log(`%c${text}`, 'color: gray;')
+}
+else {
+  Coldreload = class {
+    deserialize() {}
+    log() {}
   }
 }
 
 window.frontful = window.frontful || {}
-window.frontful.enviroment = window.frontful.enviroment || {}
-window.frontful.enviroment.coldreload = new Coldreload()
+window.frontful.environment = window.frontful.environment || {}
+window.frontful.environment.coldreload = new Coldreload()
