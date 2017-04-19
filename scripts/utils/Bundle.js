@@ -18,7 +18,7 @@ export default class Bundle {
     return new Promise((resolve, reject) => {
       this.compiler.run((error, stats) => {
         if (error || stats.hasErrors()) {
-          reject(stats ? new Error(stats.toString()) : error)
+          reject(stats ? stats : error)
         }
         else {
           resolve(stats)

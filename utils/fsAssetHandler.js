@@ -16,9 +16,7 @@ function sendAsset(fs, url, res, environment = 'browser') {
       return true
     }
   }
-  catch(e) {
-    console.log(e)
-  }
+  catch(e) {}
 
   return false
 }

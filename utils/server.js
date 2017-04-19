@@ -21,7 +21,7 @@ module.exports = function (handler, options) {
   const server = http.createServer(cumulativeHandler)
 
   const listener = server.listen(process.env.PORT || 80, (error) => {
-    console[error ? 'error' : 'log'](error || chalk.bold.green(`Server started on port ${process.env.PORT}`))
+    console[error ? 'error' : 'log'](error || chalk.green(`Server started on port ${process.env.PORT}`))
   })
 
   global.frontful = global.frontful || {}

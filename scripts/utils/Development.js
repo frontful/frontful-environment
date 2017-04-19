@@ -7,6 +7,7 @@ import deferred from '../../utils/deferred'
 import fsRequire from '../../utils/fsRequire'
 import path from 'path'
 import server from '../../utils/server'
+import printStats from '../../utils/printStats'
 
 process.env.PORT = config.server.port
 
@@ -69,10 +70,10 @@ export default class Development {
         const {0: serverStats, 1: browserStats} = stats
 
         if (serverStats.hasErrors() && (!this.browser.stats || !this.browser.stats.hasErrors())) {
-          console.log(serverStats.toString({...this.options.stats, assets: false}))
+          printStats(false, serverStats)
         }
         else if (browserStats.hasErrors() && (!this.server.stats || !this.server.stats.hasErrors())) {
-          console.log(browserStats.toString({...this.options.stats, assets: false}))
+          printStats(false, browserStats)
         }
         else {
           if (this.compiled) {
@@ -109,7 +110,9 @@ export default class Development {
         this.endHandler.bind(this, 'browser')
       ),
     ]).then((stats) => {
-      console.log(chalk.bold.green(`Application built`))
+      printStats(false, ...stats)
+
+      console.log(chalk.green(`Application built`))
 
       require('frontful-config')
       require('../../utils/coldreload/server')

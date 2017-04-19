@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 import chokidar from 'chokidar'
-import config from '../../config'
+import commonConfig from 'frontful-common/config'
 import debouce from 'lodash.debounce'
 import path from 'path'
 import uniq from 'lodash.uniq'
@@ -17,7 +17,7 @@ export default class Modules {
   watch(callback) {
     this.callback = callback
 
-    this.watcher = chokidar.watch(config.packages, {
+    this.watcher = chokidar.watch(commonConfig.packages, {
       cwd: path.resolve(process.cwd(), 'node_modules'),
       ignoreInitial: true,
       ignored: /node_modules.*node_modules/,

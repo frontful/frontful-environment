@@ -1,6 +1,6 @@
 {
   "name": "frontful-environment",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "private": false,
   "description": "Environment abstraction provider for effortless and sustainable frontend project development",
   "license": "MIT",
@@ -31,6 +31,7 @@
     "lodash.uniq": "^4.5.0",
     "memory-fs": "^0.4.1",
     "object-path": "^0.11.4",
+    "pad": "^1.1.0",
     "rimraf": "^2.6.1",
     "socket.io": "^1.7.3",
     "socket.io-client": "^1.7.3",

@@ -42,6 +42,12 @@ module.exports = function provider(options) {
           IS_BROWSER: JSON.stringify(true),
         },
       }),
+      new webpack.optimize.CommonsChunkPlugin({
+        name: 'vendor',
+        minChunks(module) {
+          return module.context && module.context.indexOf('node_modules') >= 0
+        },
+      }),
       new webpack.optimize.UglifyJsPlugin({
         compress: {
           screw_ie8: true,

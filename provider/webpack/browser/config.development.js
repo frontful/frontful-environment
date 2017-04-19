@@ -43,6 +43,12 @@ module.exports = function provider(options) {
           IS_BROWSER: JSON.stringify(true),
         },
       }),
+      new webpack.optimize.CommonsChunkPlugin({
+        name: 'vendor',
+        minChunks(module) {
+          return module.context && module.context.indexOf('node_modules') >= 0
+        },
+      }),
     ],
     module: {
       rules: [

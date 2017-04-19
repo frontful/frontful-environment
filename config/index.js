@@ -8,7 +8,7 @@ const serverWebpackOptions = customConfig.get('server.webpack.options') || defau
 serverWebpackOptions.index = (serverWebpackOptions && serverWebpackOptions.index) || customConfig.get('server.index') || defaultConfig.server.index
 
 const browserWebpackOptions = customConfig.get('browser.webpack.options') || defaultConfig.browser.webpack.options || {}
-browserWebpackOptions.index = (browserWebpackOptions && browserWebpackOptions.index) || customConfig.get('browser.index') || defaultConfig.server.index
+browserWebpackOptions.index = (browserWebpackOptions && browserWebpackOptions.index) || customConfig.get('browser.index') || defaultConfig.browser.index
 
 const mergedConfig = {
   server: {

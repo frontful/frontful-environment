@@ -4,22 +4,10 @@ import config from '../../config'
 import fs from 'fs'
 import path from 'path'
 import rimraf from 'rimraf'
+import printStats from '../../utils/printStats'
 
 export default class Build {
   constructor() {
-    this.options = {
-      stats: {
-        children: false,
-        chunkModules: false,
-        chunks: false,
-        colors: true,
-        hash: false,
-        modules: false,
-        timings: false,
-        version: false,
-      },
-    }
-
     this.server = {
       bundle: new Bundle({
         config: config.server.webpack,
@@ -38,8 +26,9 @@ export default class Build {
     Promise.all([
       this.server.bundle.build(),
       this.browser.bundle.build(),
-    ]).then(() => {
-      console.log(chalk.bold.green(`Application built`))
+    ]).then(([serverStats, browserStats]) => {
+      printStats(true, serverStats, browserStats)
+      console.log(chalk.green(`Application built`))
       const serverIndexPath = path.resolve(process.cwd(), './build/server/index.js')
       fs.writeFileSync(serverIndexPath, `
         process.env.NODE_ENV = 'production';
@@ -48,7 +37,7 @@ export default class Build {
         require('frontful-environment/utils/server')(requestListener, {assets: true});
       `)
     }).catch((error) => {
-      console.error(error)
+      printStats(true, error)
     })
   }
 }
