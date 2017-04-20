@@ -1,6 +1,8 @@
-const commonConfig = require('frontful-common/config')
 const nodeExternals = require('webpack-node-externals')
 const path = require('path')
+const rulesAssets = require('../utils/rules.assets')
+const rulesJavascript = require('../utils/rules.javascript')
+const rulesStyles = require('../utils/rules.styles')
 const webpack = require('webpack')
 
 module.exports = function provider(options) {
@@ -37,6 +39,11 @@ module.exports = function provider(options) {
       libraryTarget: "commonjs-module",
     },
     plugins: [
+      new webpack.BannerPlugin({
+        banner: `require('source-map-support').install();`,
+        raw: true,
+        entryOnly: false,
+      }),
       new webpack.optimize.OccurrenceOrderPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
       new webpack.DefinePlugin({
@@ -44,26 +51,25 @@ module.exports = function provider(options) {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         },
       }),
+      new webpack.LoaderOptionsPlugin({
+        options: {
+          postcss: function() {
+            return []
+          },
+        },
+      }),
     ],
     module: {
-      rules: [
-        {
-          test: /\.jsx?$/,
-          exclude: new RegExp(`node_modules/(?!(${commonConfig.packages.join('|')})/)`),
-          loader: 'babel-loader',
-          query: Object.assign({}, options.babel, {
-            cacheDirectory: options.cache,
-          }),
-        },
-        {
-          test: /\.(png|jpe?g|gif|ico|svg)$/i,
-          loader: 'url-loader?limit=1024',
-        },
-        {
-          test: /\.json$/,
-          loader: 'json-loader',
-        },
-      ],
+      rules: [].concat(
+        rulesJavascript({
+          babel: options.babel,
+          cache: options.cache,
+        }),
+        rulesAssets(),
+        rulesStyles({
+          browser: false
+        })
+      ),
     },
     resolve: {
       extensions: ['.js', '.jsx'],

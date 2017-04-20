@@ -1,5 +1,9 @@
-const commonConfig = require('frontful-common/config')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const hash = require('../utils/hash')
 const path = require('path')
+const rulesAssets = require('../utils/rules.assets')
+const rulesJavascript = require('../utils/rules.javascript')
+const rulesStyles = require('../utils/rules.styles')
 const webpack = require('webpack')
 
 module.exports = function provider(options) {
@@ -31,10 +35,14 @@ module.exports = function provider(options) {
     },
     output: {
       path: path.resolve(cwd, './build/browser/assets/'),
-      filename: `[name].js`,
+      filename: `${hash}.[name].js`,
       publicPath: '/assets/',
     },
     plugins: [
+      new ExtractTextPlugin({
+        filename: `${hash}.[name].css`,
+        allChunks: true,
+      }),
       new webpack.optimize.OccurrenceOrderPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
       new webpack.DefinePlugin({
@@ -49,26 +57,29 @@ module.exports = function provider(options) {
           return module.context && module.context.indexOf('node_modules') >= 0
         },
       }),
+      new webpack.LoaderOptionsPlugin({
+        options: {
+          postcss: function() {
+            return [
+              require('autoprefixer')({
+                browsers: 'last 4 version'
+              }),
+            ]
+          },
+        },
+      }),
     ],
     module: {
-      rules: [
-        {
-          test: /\.jsx?$/,
-          exclude: new RegExp(`node_modules/(?!(${commonConfig.packages.join('|')})/)`),
-          loader: 'babel-loader',
-          query: Object.assign({}, options.babel, {
-            cacheDirectory: options.cache,
-          }),
-        },
-        {
-          test: /\.(png|jpe?g|gif|ico|svg)$/i,
-          loader: 'url-loader?limit=1024',
-        },
-        {
-          test: /\.json$/,
-          loader: 'json-loader',
-        },
-      ],
+      rules: [].concat(
+        rulesJavascript({
+          babel: options.babel,
+          cache: options.cache,
+        }),
+        rulesAssets(),
+        rulesStyles({
+          browser: true
+        })
+      ),
     },
     resolve: {
       extensions: ['.js', '.jsx'],

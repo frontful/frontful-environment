@@ -29,10 +29,24 @@ export default class Build {
     ]).then(([serverStats, browserStats]) => {
       printStats(true, serverStats, browserStats)
       console.log(chalk.green(`Application built`))
+
       const serverIndexPath = path.resolve(process.cwd(), './build/server/index.js')
+
+      const assetsByChunkName = JSON.stringify(browserStats.toJson({
+        children: false,
+        chunkModules: false,
+        chunks: false,
+        assets: true,
+        hash: false,
+        modules: false,
+        timings: false,
+        version: false,
+      }).assetsByChunkName)
+
       fs.writeFileSync(serverIndexPath, `
         process.env.NODE_ENV = 'production';
         require('frontful-config');
+        require('frontful-environment/utils/assets')(${assetsByChunkName})
         var requestListener = require('./server.js');
         require('frontful-environment/utils/server')(requestListener, {assets: true});
       `)

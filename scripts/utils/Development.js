@@ -8,6 +8,7 @@ import fsRequire from '../../utils/fsRequire'
 import path from 'path'
 import server from '../../utils/server'
 import printStats from '../../utils/printStats'
+import assets from '../../utils/assets'
 
 process.env.PORT = config.server.port
 
@@ -113,6 +114,17 @@ export default class Development {
       printStats(false, ...stats)
 
       console.log(chalk.green(`Application built`))
+
+      assets(stats[1].toJson({
+        children: false,
+        chunkModules: false,
+        chunks: false,
+        assets: true,
+        hash: false,
+        modules: false,
+        timings: false,
+        version: false,
+      }).assetsByChunkName)
 
       require('frontful-config')
       require('../../utils/coldreload/server')

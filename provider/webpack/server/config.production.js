@@ -1,6 +1,8 @@
-const commonConfig = require('frontful-common/config')
 const nodeExternals = require('webpack-node-externals')
 const path = require('path')
+const rulesAssets = require('../utils/rules.assets')
+const rulesJavascript = require('../utils/rules.javascript')
+const rulesStyles = require('../utils/rules.styles')
 const webpack = require('webpack')
 
 module.exports = function provider(options) {
@@ -49,24 +51,25 @@ module.exports = function provider(options) {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         },
       }),
+      new webpack.LoaderOptionsPlugin({
+        options: {
+          postcss: function() {
+            return []
+          },
+        },
+      }),
     ],
     module: {
-      rules: [
-        {
-          test: /\.jsx?$/,
-          exclude: new RegExp(`node_modules/(?!(${commonConfig.packages.join('|')})/)`),
-          loader: 'babel-loader',
-          query: options.babel,
-        },
-        {
-          test: /\.(png|jpe?g|gif|ico|svg)$/i,
-          loader: 'url-loader?limit=1024',
-        },
-        {
-          test: /\.json$/,
-          loader: 'json-loader',
-        },
-      ],
+      rules: [].concat(
+        rulesJavascript({
+          babel: options.babel,
+          cache: options.cache,
+        }),
+        rulesAssets(),
+        rulesStyles({
+          browser: false
+        })
+      ),
     },
     resolve: {
       extensions: ['.js', '.jsx'],

@@ -43,7 +43,7 @@ if (process.env.NODE_ENV !== 'production') {
       const data = strData ? JSON.parse(strData) : null
       if (data) {
         this.deserializer(data)
-        this.log('State restored and deserialize')
+        this.log('State restored and deserialized')
       }
     }
 

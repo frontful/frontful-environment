@@ -2,6 +2,7 @@ const config = require('../config')
 const fileSystem = require('fs')
 const parse = require('url').parse
 const resolve = require('path').resolve
+const mime = require('mime')
 
 function sendAsset(fs, url, res, environment = 'browser') {
   try {
@@ -11,6 +12,7 @@ function sendAsset(fs, url, res, environment = 'browser') {
     if (url.pathname.indexOf(pathPublic) === 0) {
       const filename = resolve(path, url.pathname.replace(pathPublic, ''))
       var content = fs.readFileSync(filename);
+      res.setHeader("Content-Type", mime.lookup(filename))
       res.statusCode = 200
       res.end(content)
       return true
