@@ -1,7 +1,7 @@
 module.exports = function() {
   return [
     {
-      test: /\.(png|jpe?g|gif|ico|svg)$/i,
+      test: /(\.(png|jpe?g|gif|ico)$)|(^((?!\.jsx?).)*\.svg$)/i,
       loader: 'url-loader?limit=1024',
     },
     {
