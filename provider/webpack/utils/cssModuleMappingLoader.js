@@ -1,4 +1,4 @@
-module.exports = function(content) {
+module.exports = function cssModuleMappingLoader(content) {
   this.cacheable()
   return `
     module.exports = {

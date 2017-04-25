@@ -2,14 +2,11 @@ const commonConfig = require('frontful-common/config')
 
 module.exports = function rules(options) {
   return [
-    // {
-    //   enforce: 'pre',
-    //   test: /\.jsx?.svg$/,
-    //   loader: 'react-svg-loader',
-    //   query: {
-    //     jsx: false,
-    //   },
-    // },
+    {
+      enforce: 'pre',
+      test: /\.jsx?.svg$/,
+      loader: require.resolve('./reactSvgLoader'),
+    },
     {
       test: /\.jsx?(\.svg)?$/,
       exclude: new RegExp(`node_modules/(?!(${commonConfig.packages.join('|')})/)`),
