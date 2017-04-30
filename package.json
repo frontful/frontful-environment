@@ -1,8 +1,8 @@
 {
   "name": "frontful-environment",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "private": true,
-  "description": "Environment abstraction provider for effortless and sustainable frontend project development",
+  "description": "Environment abstraction provider for efficient and sustainable Javascript application development",
   "license": "MIT",
   "repository": {
     "type": "git",
