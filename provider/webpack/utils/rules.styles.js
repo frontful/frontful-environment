@@ -1,54 +1,135 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
+function cssLoader(modules) {
+  return {
+    loader:`css-loader`,
+    options: {
+      modules: modules || false,
+      minimize: false,
+      context: process.cwd(),
+      importLoaders: modules ? 1 : 0,
+      localIdentName: '[path]___[name]__[local]___[hash:base64:5]'
+    }
+  }
+}
+
+function postcssLoader(options) {
+  return {
+    loader: `postcss-loader`,
+    options: Object.assign({
+      plugins: [
+        require('autoprefixer')({
+          browsers: 'last 4 version'
+        })
+      ]
+    }, options)
+  }
+}
+
 module.exports = function(options) {
   return [
     {
       test: new RegExp(`^((?!\\.module).)*\\.css$`),
-      loader: options.browser ? ExtractTextPlugin.extract({
-        use: `css-loader!postcss-loader`
+      use: options.browser ? ExtractTextPlugin.extract({
+        use: [
+          cssLoader(),
+          postcssLoader(),
+        ]
       }) : 'null-loader',
     },
     {
       test: new RegExp(`^((?!\\.module).)*\\.pcss$`),
-      loader: options.browser ? ExtractTextPlugin.extract({
-        use: `css-loader!postcss-loader?parser=postcss-scss`
+      use: options.browser ? ExtractTextPlugin.extract({
+        use: [
+          cssLoader(),
+          postcssLoader({
+            parser: 'postcss-scss'
+          }),
+        ]
       }) : 'null-loader',
     },
     {
       test: new RegExp(`^((?!\\.module).)*\\.scss$`),
-      loader: options.browser ? ExtractTextPlugin.extract({
-        use: `css-loader!postcss-loader!sass-loader`
+      use: options.browser ? ExtractTextPlugin.extract({
+        use: [
+          cssLoader(),
+          postcssLoader(),
+          `sass-loader`,
+        ]
       }) : 'null-loader',
     },
     {
       test: new RegExp(`^((?!\\.module).)*\\.sass$`),
-      loader: options.browser ? ExtractTextPlugin.extract({
-        use: `css-loader!postcss-loader!sass-loader?indentedSyntax`
+      use: options.browser ? ExtractTextPlugin.extract({
+        use: [
+          cssLoader(),
+          postcssLoader(),
+          `sass-loader?indentedSyntax`,
+        ]
       }) : 'null-loader',
     },
+
+    // ----- CSS Modules -----
+
     {
       test: new RegExp(`\\.module\\.css$`),
-      loader: options.browser ? ExtractTextPlugin.extract({
-        use: `css-loader?-autoprefixer&modules&minimize=false&context=${process.cwd()}&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]!postcss-loader`
-      }) : `${require.resolve('./cssModuleMappingLoader.js')}!css-loader?-autoprefixer&modules&minimize=false&context=${process.cwd()}&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]!postcss-loader`,
+      use: options.browser ? ExtractTextPlugin.extract({
+        use: [
+          cssLoader(true),
+          postcssLoader(),
+        ]
+      }) : [
+        require.resolve('./cssModuleMappingLoader.js'),
+        cssLoader(true),
+        postcssLoader(),
+      ]
     },
     {
       test: new RegExp(`\\.module\\.pcss$`),
-      loader: options.browser ? ExtractTextPlugin.extract({
-        use: `css-loader?-autoprefixer&modules&minimize=false&context=${process.cwd()}&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]!postcss-loader?parser=postcss-scss`
-      }) : `${require.resolve('./cssModuleMappingLoader.js')}!css-loader?-autoprefixer&modules&minimize=false&context=${process.cwd()}&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]!postcss-loader?parser=postcss-scss`,
+      use: options.browser ? ExtractTextPlugin.extract({
+        use: [
+          cssLoader(true),
+          postcssLoader({
+            parser: 'postcss-scss'
+          }),
+        ]
+      }) : [
+        require.resolve('./cssModuleMappingLoader.js'),
+        cssLoader(true),
+        postcssLoader({
+          parser: 'postcss-scss'
+        }),
+      ]
     },
     {
       test: new RegExp(`\\.module\\.scss$`),
-      loader: options.browser ? ExtractTextPlugin.extract({
-        use: `css-loader?-autoprefixer&modules&minimize=false&context=${process.cwd()}&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]!postcss-loader!sass-loader`
-      }) : `${require.resolve('./cssModuleMappingLoader.js')}!css-loader?-autoprefixer&modules&minimize=false&context=${process.cwd()}&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]!postcss-loader!sass-loader`,
+      use: options.browser ? ExtractTextPlugin.extract({
+        use: [
+          cssLoader(true),
+          postcssLoader(),
+          `sass-loader`,
+        ]
+      }) : [
+        require.resolve('./cssModuleMappingLoader.js'),
+        cssLoader(true),
+        postcssLoader(),
+        `sass-loader`,
+      ]
     },
     {
       test: new RegExp(`\\.module\\.sass$`),
-      loader: options.browser ? ExtractTextPlugin.extract({
-        use: `css-loader?-autoprefixer&modules&minimize=false&context=${process.cwd()}&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]!postcss-loader!sass-loader?indentedSyntax`
-      }) : `${require.resolve('./cssModuleMappingLoader.js')}!css-loader?-autoprefixer&modules&minimize=false&context=${process.cwd()}&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]!postcss-loader!sass-loader?indentedSyntax`,
+      use: options.browser ? ExtractTextPlugin.extract({
+        use: [
+          cssLoader(true),
+          postcssLoader(),
+          `sass-loader?indentedSyntax`,
+        ]
+      }) : [
+        require.resolve('./cssModuleMappingLoader.js'),
+        cssLoader(true),
+        postcssLoader(),
+        `sass-loader?indentedSyntax`,
+      ]
     },
   ]
 }
