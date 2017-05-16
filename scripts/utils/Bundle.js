@@ -1,3 +1,4 @@
+import commonConfig from 'frontful-common/config'
 import webpack from 'webpack'
 
 process.noDeprecation = true
@@ -6,7 +7,8 @@ export default class Bundle {
   constructor(options) {
     this.options = options
     this.options.watch = this.options.watch || {
-      aggregateTimeout: 300
+      aggregateTimeout: 300,
+      ignored: new RegExp(`(node_modules.*node_modules)|(node_modules/(?!(${commonConfig.packages.join('|')})/))`),
     }
     this.compiler = webpack(this.options.config)
     this.compiler.outputFileSystem = this.options.fs || this.compiler.outputFileSystem
@@ -29,12 +31,12 @@ export default class Bundle {
 
   watch(start, end) {
     return new Promise((resolve) => {
-      this.compiler.plugin("watch-run", (compiler, next) => {
+      this.compiler.plugin('watch-run', (compiler, next) => {
         start()
         next()
       })
 
-      this.compiler.plugin("invalid", () => {
+      this.compiler.plugin('invalid', () => {
         start()
       })
 
@@ -43,6 +45,7 @@ export default class Bundle {
           end(stats)
         }
         else {
+          // console.log(stats.toString())
           end(stats)
           if (!this.compiled) {
             this.compiled = true

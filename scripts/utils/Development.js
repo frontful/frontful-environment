@@ -97,7 +97,7 @@ export default class Development {
 
   rebuild() {
     this.server.bundle.rebuild()
-    this.browser.bundle.rebuild()
+    // this.browser.bundle.rebuild()
   }
 
   start() {

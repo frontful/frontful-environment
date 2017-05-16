@@ -51,6 +51,11 @@ export default class Modules {
 
     if (cleared) {
       queue.forEach((moduleName) => {
+        Object.keys(require.cache).forEach(function(id) {
+          if (id.indexOf(process.cwd()) !== -1 && id.indexOf(process.cwd() + '/node_modules/') === -1) {
+            delete require.cache[id]
+          }
+        })
         console.log(chalk.magenta(`Module ${moduleName} reloaded`))
       })
       if (this.callback) {

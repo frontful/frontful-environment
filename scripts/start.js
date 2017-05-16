@@ -1,5 +1,6 @@
 process.env.NODE_ENV = 'development'
-process.env.NODE_PRESERVE_SYMLINKS = true
+
+require('babel-register')(require('babel-preset-frontful/server'))
 
 const Development = require('./utils/Development')
 
