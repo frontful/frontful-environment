@@ -5,8 +5,6 @@ import debouce from 'lodash.debounce'
 import path from 'path'
 import uniq from 'lodash.uniq'
 
-process.preserveSymlinks = true
-
 export default class Modules {
   constructor() {
     this.queue = []

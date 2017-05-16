@@ -84,7 +84,7 @@ module.exports = function provider(options) {
     resolve: {
       extensions: ['.js', '.jsx'],
       mainFields: ['jsnext:main', 'browser', 'main'],
-      symlinks: false,
+      symlinks: true, // this may break assets
       modules: [
         cwd + '/node_modules',
         'node_modules',
