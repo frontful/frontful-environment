@@ -1,6 +1,6 @@
 {
   "name": "frontful-environment",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "private": true,
   "description": "Environment abstraction provider for efficient and sustainable Javascript application development",
   "license": "MIT",
@@ -30,6 +30,7 @@
     "file-loader": "^0.11.1",
     "frontful-common": "0.x || 1.x",
     "frontful-config": "0.x || 1.x",
+    "frontful-utils": "0.x || 1.x",
     "json-loader": "^0.5.4",
     "lodash.debounce": "^4.0.8",
     "lodash.isplainobject": "^4.0.6",
