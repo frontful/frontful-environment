@@ -1,14 +1,14 @@
 import Bundle from './Bundle'
 import MemoryFS from 'memory-fs'
-import Modules from './Modules'
+import assets from '../../utils/assets'
 import chalk from 'chalk'
+import commonConfig from 'frontful-common/config'
 import config from '../../config'
-import {deferred} from 'frontful-utils'
 import fsRequire from '../../utils/fsRequire'
 import path from 'path'
-import server from '../../utils/server'
 import printStats from '../../utils/printStats'
-import assets from '../../utils/assets'
+import server from '../../utils/server'
+import {deferred} from 'frontful-utils'
 
 process.env.PORT = config.server.port
 
@@ -54,6 +54,8 @@ export default class Development {
     this.compile = null
   }
 
+  ignored = new RegExp(`(node_modules.*node_modules)|(node_modules/(?!(${commonConfig.packages.join('|')})/))`)
+
   startHandler(bundle) {
     if (this[bundle].compile) {
       this[bundle].compile.reject()
@@ -79,6 +81,11 @@ export default class Development {
         else {
           if (this.compiled) {
             console.log(chalk.green(`Application rebuilt`))
+            for(let id in require.cache) {
+              if (!this.ignored.test(id)) {
+                delete require.cache[id]
+              }
+            }
             require('frontful-config')
             this.server.requestHandler = fsRequire(this.fs, this.server.filename)
             global.frontful.environment.coldreload.reload()
@@ -93,11 +100,6 @@ export default class Development {
 
   endHandler(bundle, stats) {
     this[bundle].compile.resolve(stats)
-  }
-
-  rebuild() {
-    this.server.bundle.rebuild()
-    // this.browser.bundle.rebuild()
   }
 
   start() {
@@ -140,9 +142,6 @@ export default class Development {
       global.frontful.environment.coldreload.start(httpServer)
     }).then(() => {
       this.compiled = true
-      new Modules().watch(() => {
-        this.rebuild()
-      })
     }).catch((e) => console.log(e))
   }
 }
