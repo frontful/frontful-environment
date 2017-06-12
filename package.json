@@ -1,6 +1,6 @@
 {
   "name": "frontful-environment",
-  "version": "0.0.25",
+  "version": "0.0.27",
   "private": true,
   "description": "Environment abstraction provider for efficient and sustainable Javascript application development",
   "license": "MIT",
@@ -38,6 +38,7 @@
     "object-path": "^0.11.4",
     "pad": "^1.1.0",
     "postcss-loader": "^2.0.5",
+    "require-from-string": "^1.2.1",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.3",
     "socket.io": "^2.0.1",

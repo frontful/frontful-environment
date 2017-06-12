@@ -1,3 +1,4 @@
+const commonConfig = require('frontful-common/config')
 const nodeExternals = require('webpack-node-externals')
 const path = require('path')
 const rulesAssets = require('../utils/rules.assets')
@@ -19,7 +20,9 @@ module.exports = function provider(options) {
     cache: options.cache,
     context: cwd,
     devtool: options.sourceMaps && 'source-map',
-    externals: [nodeExternals()],
+    externals: [nodeExternals({
+      whitelist: commonConfig.packages
+    })],
     target: 'node',
     stats: {
       children: false,

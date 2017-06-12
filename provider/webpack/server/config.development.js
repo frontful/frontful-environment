@@ -1,3 +1,4 @@
+const commonConfig = require('frontful-common/config')
 const nodeExternals = require('webpack-node-externals')
 const path = require('path')
 const rulesAssets = require('../utils/rules.assets')
@@ -19,7 +20,9 @@ module.exports = function provider(options) {
     cache: options.cache,
     context: cwd,
     devtool: options.sourceMaps && 'eval-source-map',
-    externals: [nodeExternals()],
+    externals: [nodeExternals({
+      whitelist: commonConfig.packages
+    })],
     target: 'node',
     stats: {
       children: false,
@@ -36,7 +39,7 @@ module.exports = function provider(options) {
       path: path.resolve(cwd, './build/browser/assets/'),
       filename: `../../server/[name].js`,
       publicPath: '/assets/',
-      libraryTarget: "commonjs-module",
+      libraryTarget: 'commonjs-module',
     },
     plugins: [
       new webpack.BannerPlugin({
