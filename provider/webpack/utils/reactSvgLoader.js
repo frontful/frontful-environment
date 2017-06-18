@@ -1,7 +1,7 @@
-import Svgo from 'svgo'
-import {transform} from 'babel-core'
+const Svgo = require('svgo')
+const {transform} = require('babel-core')
 
-import reactSvgPlugin from './reactSvgPlugin'
+const reactSvgPlugin = require('./reactSvgPlugin')
 
 function optimizeSvg () {
   const svgo = new Svgo({
@@ -28,7 +28,7 @@ function transformSvg () {
   }
 }
 
-export default function (content) {
+module.exports = function (content) {
   if (this.cacheable) {
     this.cacheable(true)
   }

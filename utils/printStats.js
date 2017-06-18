@@ -1,6 +1,6 @@
-import path from 'path'
-import chalk from 'chalk'
-import pad from 'pad'
+const path = require('path')
+const chalk = require('chalk')
+const pad = require('pad')
 
 const statsOptions = {
   children: false,
@@ -14,7 +14,8 @@ const statsOptions = {
   version: false,
 }
 
-export default function printStats(printSize, ...items) {
+module.exports = function printStats(printSize, items) {
+  items = Array.isArray(items) ? items : [items]
   const stats = {
     time: null,
     folder: {}
@@ -30,7 +31,7 @@ export default function printStats(printSize, ...items) {
     if (!error) {
       if (item.hasErrors()) {
         error = true
-        console.log(item.toString({...statsOptions, assets: false}))
+        console.log(item.toString(Object.assign({}, statsOptions, {assets: false})))
       }
       else {
         const jsonStats = item.toJson(statsOptions)

@@ -1,9 +1,9 @@
-import commonConfig from 'frontful-common/config'
-import webpack from 'webpack'
+const commonConfig = require('frontful-common/config')
+const webpack = require('webpack')
 
 process.noDeprecation = true
 
-export default class Bundle {
+module.exports = class Bundle {
   constructor(options) {
     this.options = options
     this.options.watch = this.options.watch || {
@@ -45,7 +45,6 @@ export default class Bundle {
           end(stats)
         }
         else {
-          // console.log(stats.toString())
           end(stats)
           if (!this.compiled) {
             this.compiled = true

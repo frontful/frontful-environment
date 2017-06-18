@@ -19,7 +19,7 @@ module.exports = function provider(options) {
   return {
     cache: options.cache,
     context: cwd,
-    devtool: options.sourceMaps && 'eval-source-map',
+    devtool: options.sourceMaps && 'source-map',
     externals: [nodeExternals({
       whitelist: commonConfig.packages
     })],
@@ -42,18 +42,8 @@ module.exports = function provider(options) {
       libraryTarget: 'commonjs-module',
     },
     plugins: [
-      new webpack.BannerPlugin({
-        banner: `require('source-map-support').install();`,
-        raw: true,
-        entryOnly: false,
-      }),
       new webpack.optimize.OccurrenceOrderPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
-      new webpack.DefinePlugin({
-        'process.env': {
-          NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-        },
-      }),
       new webpack.LoaderOptionsPlugin({
         options: {
           postcss: function() {

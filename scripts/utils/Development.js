@@ -1,20 +1,50 @@
-import Bundle from './Bundle'
-import MemoryFS from 'memory-fs'
-import assets from '../../utils/assets'
-import chalk from 'chalk'
-import commonConfig from 'frontful-common/config'
-import config from '../../config'
-import fsRequire from '../../utils/fsRequire'
-import path from 'path'
-import printStats from '../../utils/printStats'
-import server from '../../utils/server'
-import {deferred} from 'frontful-utils'
+const Bundle = require('./Bundle')
+const MemoryFS = require('memory-fs')
+const assets = require('../../utils/assets')
+const chalk = require('chalk')
+const commonConfig = require('frontful-common/config')
+const config = require('../../config')
+const fs = require('fs')
+const fsRequire = require('../../utils/fsRequire')
+const path = require('path')
+const printStats = require('../../utils/printStats')
+const server = require('../../utils/server')
+const {deferred} = require('frontful-utils')
+const parseError = require('../../utils/parseError')
 
 process.env.PORT = config.server.port
 
-export default class Development {
+const ignored = new RegExp(`(node_modules.*node_modules)|(node_modules/(?!(${commonConfig.packages.join('|')})/))`)
+
+module.exports = class Development {
   constructor() {
+    // this.fs = null
     this.fs = new MemoryFS()
+
+    const getServerFilename = () => {
+      return this.server && this.server.filename
+    }
+
+    const getFileSystem = () => {
+      return this.fs || fs
+    }
+
+    require('source-map-support').install({
+      handleUncaughtExceptions: false,
+      hookRequire: true,
+      environment: 'node',
+      retrieveSourceMap: (source) => {
+        try {
+          if (source === getServerFilename()) {
+            return {
+              url: source,
+              map: getFileSystem().readFileSync(source.replace(/\.js$/i, '.js.map'), 'utf8')
+            };
+          }
+        } catch(error) {}
+        return null
+      }
+    })
 
     this.options = {
       stats: {
@@ -54,8 +84,6 @@ export default class Development {
     this.compile = null
   }
 
-  ignored = new RegExp(`(node_modules.*node_modules)|(node_modules/(?!(${commonConfig.packages.join('|')})/))`)
-
   startHandler(bundle) {
     if (this[bundle].compile) {
       this[bundle].compile.reject()
@@ -82,7 +110,7 @@ export default class Development {
           if (this.compiled) {
             console.log(chalk.green(`Application rebuilt`))
             for(let id in require.cache) {
-              if (!this.ignored.test(id)) {
+              if (!ignored.test(id)) {
                 delete require.cache[id]
               }
             }
@@ -94,7 +122,7 @@ export default class Development {
 
         this.server.stats = serverStats
         this.browser.stats = browserStats
-      }).catch((e) => e ? console.log(e) : null)
+      }).catch((e) => e ? console.log(parseError(e).color) : null)
     }
   }
 
@@ -113,7 +141,7 @@ export default class Development {
         this.endHandler.bind(this, 'browser')
       ),
     ]).then((stats) => {
-      printStats(false, ...stats)
+      printStats(false, stats)
 
       console.log(chalk.green(`Application built`))
 
@@ -142,6 +170,9 @@ export default class Development {
       global.frontful.environment.coldreload.start(httpServer)
     }).then(() => {
       this.compiled = true
-    }).catch((e) => console.log(e))
+    }).catch((e) => {
+      console.log(parseError(e).color)
+      process.exit(1)
+    })
   }
 }

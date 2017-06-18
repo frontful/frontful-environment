@@ -20,7 +20,7 @@ function namespaceToCamel(namespace, name) {
   return namespace + name.charAt(0).toUpperCase() + name.slice(1)
 }
 
-export default function (babel) {
+module.exports = function (babel) {
   const t = babel.types
 
   const attrVisitor = {

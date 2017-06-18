@@ -49,11 +49,6 @@ module.exports = function provider(options) {
         entryOnly: false,
       }),
       new webpack.optimize.OccurrenceOrderPlugin(),
-      new webpack.DefinePlugin({
-        'process.env': {
-          NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-        },
-      }),
       new webpack.LoaderOptionsPlugin({
         options: {
           postcss: function() {

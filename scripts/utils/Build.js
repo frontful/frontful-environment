@@ -1,12 +1,12 @@
-import Bundle from './Bundle'
-import chalk from 'chalk'
-import config from '../../config'
-import fs from 'fs'
-import path from 'path'
-import rimraf from 'rimraf'
-import printStats from '../../utils/printStats'
+const Bundle = require('./Bundle')
+const chalk = require('chalk')
+const config = require('../../config')
+const fs = require('fs')
+const path = require('path')
+const rimraf = require('rimraf')
+const printStats = require('../../utils/printStats')
 
-export default class Build {
+module.exports = class Build {
   constructor() {
     this.server = {
       bundle: new Bundle({
@@ -27,7 +27,7 @@ export default class Build {
       this.server.bundle.build(),
       this.browser.bundle.build(),
     ]).then(([serverStats, browserStats]) => {
-      printStats(true, serverStats, browserStats)
+      printStats(true, [serverStats, browserStats])
       console.log(chalk.green(`Application built`))
 
       const serverIndexPath = path.resolve(process.cwd(), './build/server/index.js')
@@ -47,8 +47,9 @@ export default class Build {
         process.env.NODE_ENV = 'production';
         require('frontful-config');
         require('frontful-environment/utils/assets')(${assetsByChunkName})
+        var server = require('frontful-environment/utils/server');
         var requestListener = require('./server.js');
-        require('frontful-environment/utils/server')(requestListener, {assets: true});
+        server(requestListener, {assets: true});
       `)
     }).catch((error) => {
       printStats(true, error)

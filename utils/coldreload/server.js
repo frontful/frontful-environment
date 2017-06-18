@@ -33,8 +33,8 @@ if (process.env.NODE_ENV !== 'production') {
       this.socket.emit('frontful.coldreload.reload', null, {for: 'everyone'})
     }
 
-    log(...args) {
-      console.log(chalk.gray.apply(chalk, args))
+    log() {
+      console.log(chalk.gray.apply(chalk, arguments))
     }
   }
 }
