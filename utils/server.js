@@ -9,7 +9,9 @@ global.frontful.environment.parseError = parseError
 global.frontful.environment.errorHandler = (error, req, res, next) => { // eslint-disable-line
   const parsed = parseError(error)
   console.log(parsed.color)
-  res.send(`<pre>${parsed}</pre>`).end()
+  if (!res.headersSent) {
+    res.send(`<pre>${parsed}</pre>`).end()
+  }
 }
 
 module.exports = function (handler, options) {
