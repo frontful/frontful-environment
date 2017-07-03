@@ -10,7 +10,7 @@ global.frontful.environment.errorHandler = (error, req, res, next) => { // eslin
   const parsed = parseError(error)
   console.log(parsed.color)
   if (!res.headersSent) {
-    res.send(`<pre>${parsed}</pre>`).end()
+    res.status(500).send(`<pre>${parsed}</pre>`).end()
   }
 }
 
