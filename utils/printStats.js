@@ -43,7 +43,7 @@ module.exports = function printStats(printSize, items) {
 
           maxSizeLength = Math.max(maxSizeLength, size.length)
 
-          const folder = '.' + filePath.replace(process.cwd(), '').replace(`/${file}`, '')
+          const folder = '.' + filePath.replace(process.cwd(), '').replace(file, '').replace(/(\/|\\)$/,'');
           stats.folder[folder] = stats.folder[folder] || []
 
           stats.folder[folder].push({
