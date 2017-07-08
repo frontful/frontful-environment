@@ -1,6 +1,6 @@
 {
   "name": "frontful-environment",
-  "version": "0.0.34",
+  "version": "0.0.36",
   "private": true,
   "description": "Environment abstraction provider for efficient and sustainable Javascript application development",
   "license": "MIT",
@@ -22,10 +22,10 @@
     "babel-preset-frontful": "0.x || 1.x",
     "babel-register": "^6.24.1",
     "babel-runtime": "^6.23.0",
-    "chalk": "^1.1.3",
+    "chalk": "^2.0.1",
     "css-loader": "^0.28.0",
     "eslint-config-frontful": "0.x || 1.x",
-    "extract-text-webpack-plugin": "^2.1.0",
+    "extract-text-webpack-plugin": "^3.0.0-rc.1",
     "file-loader": "^0.11.1",
     "frontful-common": "0.x || 1.x",
     "frontful-config": "0.x || 1.x",
@@ -44,9 +44,10 @@
     "socket.io": "^2.0.1",
     "socket.io-client": "^2.0.1",
     "source-map-support": "^0.4.15",
+    "strip-ansi": "^4.0.0",
     "svgo": "^0.7.2",
     "url-loader": "^0.5.8",
-    "webpack": "^2.3.3",
+    "webpack": "^3.1.0",
     "webpack-node-externals": "^1.5.4"
   }
 }
