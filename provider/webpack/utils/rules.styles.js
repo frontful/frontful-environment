@@ -8,7 +8,7 @@ function cssLoader(modules) {
       minimize: false,
       context: process.cwd(),
       importLoaders: modules ? 1 : 0,
-      localIdentName: '[path]___[name]__[local]___[hash:base64:5]'
+      localIdentName: process.env.NODE_ENV === 'production' ? '[hash:base64:5]' : '[path]___[name]__[local]___[hash:base64:5]'
     }
   }
 }

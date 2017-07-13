@@ -1,6 +1,6 @@
-const path = require('path')
 const chalk = require('chalk')
 const pad = require('pad')
+const path = require('path')
 
 const statsOptions = {
   children: false,

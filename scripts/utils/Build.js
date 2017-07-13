@@ -3,8 +3,8 @@ const chalk = require('chalk')
 const config = require('../../config')
 const fs = require('fs')
 const path = require('path')
-const rimraf = require('rimraf')
 const printStats = require('../../utils/printStats')
+const rimraf = require('rimraf')
 
 module.exports = class Build {
   constructor() {
@@ -46,10 +46,10 @@ module.exports = class Build {
       fs.writeFileSync(serverIndexPath, `
         process.env.NODE_ENV = 'production';
         require('frontful-config');
-        require('frontful-environment/utils/assets')(${assetsByChunkName})
+        require('frontful-environment/utils/assets')(${assetsByChunkName});
         var server = require('frontful-environment/utils/server');
         var requestListener = require('./server.js');
-        server(requestListener, {assets: true});
+        server(requestListener, {assets: ${config.server.assets.toString()}});
       `)
     }).catch((error) => {
       printStats(true, error)

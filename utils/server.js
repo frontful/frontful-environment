@@ -10,7 +10,16 @@ global.frontful.environment.errorHandler = (error, req, res, next) => { // eslin
   const parsed = parseError(error)
   console.log(parsed.color)
   if (!res.headersSent) {
-    res.status(500).send(`<pre>${parsed}</pre>`).end()
+    res.status(500)
+    if (req.accepts('html')) {
+      res.send(`<pre style="color: red;">${parsed}</pre>`).end()
+    }
+    else if (req.accepts('json')) {
+      res.json({error: parsed.toString()}).end()
+    }
+    else {
+      res.send(parsed.toString()).end()
+    }
   }
 }
 
@@ -32,7 +41,9 @@ module.exports = function (handler, options) {
 
   const server = http.createServer(cumulativeHandler)
 
-  const listener = server.listen(process.env.PORT || 80, (error) => {
+  process.env.PORT = process.env.PORT || 80
+
+  const listener = server.listen(process.env.PORT, (error) => {
     console[error ? 'error' : 'log'](error || chalk.green(`Server started on port ${process.env.PORT}`))
   })
 

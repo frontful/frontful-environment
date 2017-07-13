@@ -1,6 +1,6 @@
 const defaultConfig = require('./index.default')
-const providerPackage = require('frontful-config/provider/package')
 const objectPath = require('object-path')
+const providerPackage = require('frontful-config/provider/package')
 
 const customConfig = objectPath(providerPackage('frontful.environment') || {})
 
@@ -11,8 +11,10 @@ const browserWebpackOptions = customConfig.get('browser.webpack.options') || def
 browserWebpackOptions.index = (browserWebpackOptions && browserWebpackOptions.index) || customConfig.get('browser.index') || defaultConfig.browser.index
 
 const mergedConfig = {
+  memory: typeof customConfig.get('memory') === 'boolean' ? customConfig.get('memory') : defaultConfig.memory,
   server: {
     index: serverWebpackOptions.index,
+    assets: typeof customConfig.get('server.assets') === 'boolean' ? customConfig.get('server.assets') : defaultConfig.server.assets,
     port: customConfig.get('server.port') || defaultConfig.server.port,
     webpack: customConfig.get('server.webpack.config') || require('../provider/webpack/server')(serverWebpackOptions),
   },

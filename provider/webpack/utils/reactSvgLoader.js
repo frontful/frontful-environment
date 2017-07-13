@@ -1,7 +1,6 @@
 const Svgo = require('svgo')
-const {transform} = require('babel-core')
-
 const reactSvgPlugin = require('./reactSvgPlugin')
+const {transform} = require('babel-core')
 
 function optimizeSvg () {
   const svgo = new Svgo({

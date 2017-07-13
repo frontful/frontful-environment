@@ -6,11 +6,11 @@ const commonConfig = require('frontful-common/config')
 const config = require('../../config')
 const fs = require('fs')
 const fsRequire = require('../../utils/fsRequire')
+const parseError = require('../../utils/parseError')
 const path = require('path')
 const printStats = require('../../utils/printStats')
 const server = require('../../utils/server')
 const {deferred} = require('frontful-utils')
-const parseError = require('../../utils/parseError')
 
 process.env.PORT = config.server.port
 
@@ -18,8 +18,7 @@ const ignored = new RegExp(`(node_modules.*node_modules)|(node_modules/(?!(${com
 
 module.exports = class Development {
   constructor() {
-    // this.fs = null
-    this.fs = new MemoryFS()
+    this.fs = config.memory ? new MemoryFS() : null
 
     const getServerFilename = () => {
       return this.server && this.server.filename
@@ -164,7 +163,7 @@ module.exports = class Development {
 
       const httpServer = server((req, res) => this.server.requestHandler(req, res), {
         fs: this.fs,
-        assets: true,
+        assets: config.server.assets,
       })
 
       global.frontful.environment.coldreload.start(httpServer)
