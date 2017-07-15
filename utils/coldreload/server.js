@@ -51,4 +51,5 @@ else {
 
 global.frontful = global.frontful || {}
 global.frontful.environment = global.frontful.environment || {}
+
 global.frontful.environment.coldreload = new Coldreload()

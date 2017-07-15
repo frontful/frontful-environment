@@ -2,7 +2,7 @@ module.exports = function (assetsByChunkName) {
   assetsByChunkName.main = (assetsByChunkName.main instanceof Array) ? assetsByChunkName.main : [assetsByChunkName.main]
   assetsByChunkName.vendor = (assetsByChunkName.vendor instanceof Array) ? assetsByChunkName.vendor : [assetsByChunkName.vendor]
 
-  const assets = {
+  const bundle = {
     js: {
       main: assetsByChunkName.main[0] && `/assets/${assetsByChunkName.main[0]}`,
       vendor: assetsByChunkName.vendor[0] && `/assets/${assetsByChunkName.vendor[0]}`,
@@ -15,5 +15,6 @@ module.exports = function (assetsByChunkName) {
 
   global.frontful = global.frontful || {}
   global.frontful.environment = global.frontful.environment || {}
-  global.frontful.environment.assets = assets
+
+  global.frontful.environment.bundle = bundle
 }

@@ -1,6 +1,6 @@
 {
   "name": "frontful-environment",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "private": true,
   "description": "Environment abstraction provider for efficient and sustainable Javascript application development",
   "license": "MIT",
@@ -8,6 +8,7 @@
     "type": "git",
     "url": "https://github.com/frontful/frontful-environment.git"
   },
+  "main": "./index.js",
   "bin": {
     "frontful-environment": "./bin/frontful-environment.js"
   },

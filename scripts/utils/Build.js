@@ -46,10 +46,10 @@ module.exports = class Build {
       fs.writeFileSync(serverIndexPath, `
         process.env.NODE_ENV = 'production';
         require('frontful-config');
-        require('frontful-environment/utils/assets')(${assetsByChunkName});
+        require('frontful-environment/utils/bundle')(${assetsByChunkName});
         var server = require('frontful-environment/utils/server');
-        var requestListener = require('./server.js');
-        server(requestListener, {assets: ${config.server.assets.toString()}});
+        var requestHandler = require('./server.js');
+        server(requestHandler, {assets: ${config.server.assets.toString()}});
       `)
     }).catch((error) => {
       printStats(true, error)

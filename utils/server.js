@@ -1,27 +1,15 @@
 const chalk = require('chalk')
-const fsAssetHandler = require('./fsAssetHandler')
+const getAssetHandler = require('./getAssetHandler')
 const http = require('http')
-const parseError = require('./parseError')
+const errorParser = require('./errorParser')
+const getErrorHandler = require('./getErrorHandler')
 
 global.frontful = global.frontful || {}
 global.frontful.environment = global.frontful.environment || {}
-global.frontful.environment.parseError = parseError
-global.frontful.environment.errorHandler = (error, req, res, next) => { // eslint-disable-line
-  const parsed = parseError(error)
-  console.log(parsed.color)
-  if (!res.headersSent) {
-    res.status(500)
-    if (req.accepts('html')) {
-      res.send(`<pre style="color: red;">${parsed}</pre>`).end()
-    }
-    else if (req.accepts('json')) {
-      res.json({error: parsed.toString()}).end()
-    }
-    else {
-      res.send(parsed.toString()).end()
-    }
-  }
-}
+
+global.frontful.environment.error = global.frontful.environment.error || {}
+global.frontful.environment.error.parser = errorParser
+global.frontful.environment.error.getHandler = getErrorHandler
 
 module.exports = function (handler, options) {
   options = options || {}
@@ -29,8 +17,9 @@ module.exports = function (handler, options) {
   let cumulativeHandler
 
   if (options.assets) {
+    const assetHandler = getAssetHandler({fs: options.fs})
     cumulativeHandler = (req, res) => {
-      fsAssetHandler(options.fs, req, res, () => {
+      assetHandler(req, res, () => {
         handler(req, res)
       })
     }

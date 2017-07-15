@@ -1,12 +1,12 @@
 const Bundle = require('./Bundle')
 const MemoryFS = require('memory-fs')
-const assets = require('../../utils/assets')
+const bundle = require('../../utils/bundle')
 const chalk = require('chalk')
 const commonConfig = require('frontful-common/config')
 const config = require('../../config')
+const errorParser = require('../../utils/errorParser')
 const fs = require('fs')
-const fsRequire = require('../../utils/fsRequire')
-const parseError = require('../../utils/parseError')
+const requireFile = require('../../utils/requireFile')
 const path = require('path')
 const printStats = require('../../utils/printStats')
 const server = require('../../utils/server')
@@ -114,14 +114,14 @@ module.exports = class Development {
               }
             }
             require('frontful-config')
-            this.server.requestHandler = fsRequire(this.fs, this.server.filename)
+            this.server.requestHandler = requireFile(this.server.filename, {fs: this.fs})
             global.frontful.environment.coldreload.reload()
           }
         }
 
         this.server.stats = serverStats
         this.browser.stats = browserStats
-      }).catch((e) => e ? console.log(parseError(e).color) : null)
+      }).catch((e) => e ? console.log(errorParser(e).colorful) : null)
     }
   }
 
@@ -144,7 +144,7 @@ module.exports = class Development {
 
       console.log(chalk.green(`Application built`))
 
-      assets(stats[1].toJson({
+      bundle(stats[1].toJson({
         children: false,
         chunkModules: false,
         chunks: false,
@@ -159,7 +159,7 @@ module.exports = class Development {
       require('../../utils/coldreload/server')
 
       this.server.filename = path.resolve(config.server.webpack.output.path, stats[0].compilation.entrypoints.server.chunks[0].files[0])
-      this.server.requestHandler = fsRequire(this.fs, this.server.filename)
+      this.server.requestHandler = requireFile(this.server.filename, {fs: this.fs})
 
       const httpServer = server((req, res) => this.server.requestHandler(req, res), {
         fs: this.fs,
@@ -170,7 +170,7 @@ module.exports = class Development {
     }).then(() => {
       this.compiled = true
     }).catch((e) => {
-      console.log(parseError(e).color)
+      console.log(errorParser(e).colorful)
       process.exit(1)
     })
   }

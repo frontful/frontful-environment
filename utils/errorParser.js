@@ -1,7 +1,7 @@
 const chalk = require('chalk')
 const stripAnsi = require('strip-ansi')
 
-module.exports = function parseError(e) {
+module.exports = function errorParser(e) {
   let result = []
   try {
     const stack = e.stack
@@ -29,8 +29,9 @@ module.exports = function parseError(e) {
   }
 
   const joined = result.join('\n')
-  let parsed = new String(stripAnsi(joined)) // eslint-disable-line
-  parsed.color = joined
 
-  return parsed
+  return {
+    colorful: joined,
+    string: stripAnsi(joined)
+  }
 }
