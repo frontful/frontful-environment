@@ -230,7 +230,7 @@ This mechanic should be compatible with any state management system that support
 ```javascript
 import environment from 'frontful-environment'
 // Parse error
-const error = environment.error.parse(e)
+const error = environment.error.parser(e)
 // Log error in with colors
 console.log(error.colorful)
 // Log error without colors
