@@ -766,8 +766,8 @@ babel-preset-flow@^6.23.0:
     babel-plugin-transform-flow-strip-types "^6.22.0"
 
 "babel-preset-frontful@0.x || 1.x":
-  version "0.0.38"
-  resolved "https://registry.yarnpkg.com/babel-preset-frontful/-/babel-preset-frontful-0.0.38.tgz#fb4093a14ae736af2737e7f86fd3b7956d58e41e"
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/babel-preset-frontful/-/babel-preset-frontful-0.0.39.tgz#d463a8de587b084fafad4d135cd96d75a8ddba58"
   dependencies:
     babel-plugin-add-module-exports "^0.2.1"
     babel-plugin-transform-class-properties "^6.24.1"
@@ -785,7 +785,7 @@ babel-preset-flow@^6.23.0:
     babel-register "^6.24.1"
     chalk "^2.0.1"
     find "^0.2.7"
-    fs-extra "^3.0.0"
+    fs-extra "^4.0.0"
 
 babel-preset-react@^6.24.1:
   version "6.24.1"
@@ -1197,8 +1197,8 @@ color-convert@^1.0.0, color-convert@^1.3.0:
     color-name "^1.1.1"
 
 color-name@^1.0.0, color-name@^1.1.1:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.2.tgz#5c8ab72b64bd2215d617ae9559ebb148475cf98d"
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.3.tgz#a7d0558bd89c42f795dd42328f740831ca53bc25"
 
 color-string@^0.3.0:
   version "0.3.0"
@@ -1724,8 +1724,8 @@ escope@^3.6.0:
     estraverse "^4.1.1"
 
 "eslint-config-frontful@0.x || 1.x":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/eslint-config-frontful/-/eslint-config-frontful-0.0.22.tgz#1e96f81d0ac032379ecdaea50ac8ea6a046af965"
+  version "0.0.24"
+  resolved "https://registry.yarnpkg.com/eslint-config-frontful/-/eslint-config-frontful-0.0.24.tgz#96db473a639e7ba1d52b7cfb515775288f3c261a"
   dependencies:
     babel-eslint "^7.2.1"
     eslint "^4.1.0"
@@ -2030,15 +2030,15 @@ form-data@~2.1.1:
     mime-types "^2.1.12"
 
 "frontful-common@0.x || 1.x":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/frontful-common/-/frontful-common-0.0.14.tgz#580a5c328330c0c8acf9f34f1ee0ccae0a9f5d5a"
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/frontful-common/-/frontful-common-0.0.15.tgz#468fff8dceadeded50521fd5514c8b84be123824"
   dependencies:
     frontful-config "0.x || 1.x"
     object-path "^0.11.4"
 
 "frontful-config@0.x || 1.x":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/frontful-config/-/frontful-config-0.0.18.tgz#3d84a060c315543ffc67b0c48c4eac4f5a7dc71d"
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/frontful-config/-/frontful-config-0.0.19.tgz#2efa17275d88ec84b00adb8e621d350aa6d2a204"
   dependencies:
     deep-extend "^0.5.0"
     js-yaml "^3.8.3"
@@ -2048,9 +2048,9 @@ form-data@~2.1.1:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/frontful-utils/-/frontful-utils-0.0.7.tgz#71b332ff820098e9bf79e6935ef911b6f02b979c"
 
-fs-extra@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-3.0.1.tgz#3794f378c58b342ea7dbbb23095109c4b3b62291"
+fs-extra@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-4.0.0.tgz#414fb4ca2d2170ba0014159d3a8aec3303418d9e"
   dependencies:
     graceful-fs "^4.1.2"
     jsonfile "^3.0.0"
@@ -2565,8 +2565,8 @@ jsbn@~0.1.0:
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
 
 jschardet@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-1.4.2.tgz#2aa107f142af4121d145659d44f50830961e699a"
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-1.5.0.tgz#a61f310306a5a71188e1b1acd08add3cfbb08b1e"
 
 jsesc@^1.3.0:
   version "1.3.0"

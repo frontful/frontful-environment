@@ -1,6 +1,6 @@
 {
   "name": "frontful-environment",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "private": true,
   "description": "Environment abstraction provider for efficient and sustainable Javascript application development",
   "license": "MIT",
@@ -13,8 +13,10 @@
     "frontful-environment": "./bin/frontful-environment.js"
   },
   "scripts": {
-    "build": "babel-preset-frontful build",
-    "deploy": "babel-preset-frontful deploy"
+    "build": "yarn test && babel-preset-frontful build",
+    "deploy": "yarn test && babel-preset-frontful deploy",
+    "test": "yarn test:eslint",
+    "test:eslint": "node ./node_modules/eslint/bin/eslint.js --max-warnings 0 ."
   },
   "dependencies": {
     "autoprefixer": "^7.0.1",
