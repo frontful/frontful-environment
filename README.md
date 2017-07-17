@@ -45,8 +45,9 @@ frontful
 
 1. Add `frontful-environment` package
 ```shell
+# Using yarn
 yarn add frontful-environment
-# or
+# or npm
 npm install -s frontful-environment
 ```
 
