@@ -1,10 +1,10 @@
 # <a href="https://github.com/frontful/frontful-environment"><img heigth="75" src="http://www.frontful.com/assets/packages/environment.png" alt="Frontful Environment" /></a>
 
-`frontful-environment` is packaged provider of environment setup and developer tools for Javascript application development for [Node](https://nodejs.org/) and browser.
+`frontful-environment` is packaged provider of environment setup, scripts and developer utilities for server and browser Javascript application development. It's environment setup provider for [Frontful](https://github.com/frontful) infrastructure.
 
-Configuration of modern javascript application using [Babel](https://babeljs.io/) and [Webpack](https://webpack.js.org/) can be fun and exciting, but it may become overwhelming and time consuming. `frontful-environment` is packaged abstraction on top of Babel, Webpack and other great tools to provide simple yet configurable environment setup with essential features, good developer experience and isolation. `frontful-environment` can streamline application development environment setup and help focus on feature implementation instead of Javascript DevOps'ing.
+Configuration of modern javascript applications using [Babel](https://babeljs.io/) and [Webpack](https://webpack.js.org/) can be fun and exciting, it can also be time consuming and somewhat overwhelming. `frontful-environment` is packaged abstraction on top of Babel, Webpack and other great tools to provide simple yet configurable environment setup with essential features, good developer experience, abstraction and isolation. `frontful-environment` can streamline application development environment setup and help to focus on feature implementation instead of Javascript DevOps.
 
-Conceptually `frontful-environment` is similar to [`react-scripts`](https://github.com/facebookincubator/create-react-app/tree/master/packages/react-scripts) in [`react-create-app`](https://github.com/facebookincubator/create-react-app). Difference lyes in that `frontful-environment` focuses not only on build for browser but also build for Node server, this results in basic infrastructure for creating isomorphic applications.
+Conceptually `frontful-environment` is similar to [`react-scripts`](https://github.com/facebookincubator/create-react-app/tree/master/packages/react-scripts) in [`react-create-app`](https://github.com/facebookincubator/create-react-app). Difference lyes in that `frontful-environment` focuses not only on build for browser but also server, this results in core infrastructure for developing isomorphic applications, different feature set and mechanics.
 
 ### Features
   - ES6+ environment with ES Modules
@@ -25,25 +25,27 @@ Conceptually `frontful-environment` is similar to [`react-scripts`](https://gith
     - CSS Modules
     - Integrated autoprefixer
   - Environment configuration
-  - Source maps
-  - Linter
-  - Error formatting
   - Production build
+  - Utilities
+    - Linter
+    - Source maps
+    - Error parsing
 
-<!--
-### Setup using [CLI](https://github.com/frontful/frontful-cli)
+### Mechanics
 
-```shell
-# Install frontful CLI globally using npm
-npm install -g frontful-cli
-# Run frontful CLI to scaffold new project
-frontful
-```
--->
+`frontful-environment` consists of two aspects
+  - **Script** - Script is installed under `node_modules/.bin` as `frontful-environment` and provides two variation
+    - `frontful-environment start` - Starts application for development with live cold reload and [package development assist](https://github.com/frontful/frontful-common#package-development-assist). _Utilities_ are working in `NODE_ENV=development` mode e.g. _cold reload state persistence_ and _error handling_. Babel and Webpack are building server and browser bundles (in memory by default), these bundles get rebuilt and reloaded when code is changed.
+    - `frontful-environment build` - Builds application for `production` and outputs optimized server and browser bundles to `./build` folder. To run production build execute `PORT=8000 node ./build/server`. Babel and Webpack are working only during build process, when application is run Babel and Webpack are not triggered. Certain _utilities_ are disabled or working in `NODE_ENV=production` mode e.g. _cold reload state persistence_ and _error handling_
+  - **Utilities** - Provides utilities to access and use certain aspects of `frontful-environment`. To use these utilities `import environment from 'frontful-environment'`.
+    - `environment.assets` - Get bundle absolute mount path e.g. `js.main`, `js.vendor`, `css.main`, `css.vendor`.
+    - `environment.coldreload` - Utilities for setting `serializer` and `deserializer` handlers and accessing persisted `state`
+    - `environment.error` - Utilities for error `parser()` and `getHandler()` Express.js style error handler middleware.
+    - `environment.server` - Get current `http` server instance
+    - `environment.listener` - Get current `http` server listener instance
 
-### Manual setup
+### Installation
 
-1. Add `frontful-environment` package
 ```shell
 # Using yarn
 yarn add frontful-environment
@@ -51,26 +53,15 @@ yarn add frontful-environment
 npm install -s frontful-environment
 ```
 
-2. Add `frontful` configuration section to `package.json` that points to browser and server entry scripts.
-This step is optional if you are ok with [defaults](https://github.com/frontful/frontful-environment/blob/master/config/index.default.js).
-```javascript
-// package.json
-{
-  "frontful": {
-    "environment": {
-      "server": {
-        "index": "./src/server/index.js"
-      },
-      "browser": {
-        "index": "./src/browser/index.js"
-      }
-    }
-  }
-}
-```
-**File to which `frontful.environment.server.index` points to must export http request handler function or [Express.js](http://expressjs.com/) like instance that will handle requests**
+### Integration
 
-3. Add `start` and `build` scripts to `scripts` section of `package.json`
+By default `frontful-environment` has only one assumption/requirement, that you have two entry points to your applications
+  - `./src/browser/index.js` - Entry point for browser bundle
+  - `./src/server/index.js` - Entry point for server bundle. **Server entry must exports http request handler or Express.js style application instance.**
+
+To change default entry point file names read section on [Configuration](https://github.com/frontful/frontful-environment#configuration).
+
+Add `start` and `build` `scripts` to `package.json`
 ```javascript
 // package.json
 {
@@ -80,15 +71,28 @@ This step is optional if you are ok with [defaults](https://github.com/frontful/
   }
 }
 ```
-Run `yarn start` or `npm run start` to start application for development.  
-Run `yarn build` or `npm run build` to build application for production.  
-Run `node ./build/server` to start application for production
+
+Ensure that entry point file for browser exists e.g. `./src/browser/index.js`.
+
+Ensure that entry point file for server exists e.g. `./src/server/index.js` and that it exports http server request handler or Express.js style instance
+```javascript
+import express from 'express'
+const app = express()
+app.use(...)
+export default app
+```
+
+To start application for `development` run `yarn start` or `npm run start`.  
+To build application for `production` run `yarn build` or `npm run build`.  
+To start application for production after build run `PORT=8000 node ./build/server`.
+
+For extended integration, e.g. enabling cold reload state persistence or getting mounted path of built assets and bundles, read section on [Utilities](https://github.com/frontful/frontful-environment#utilities)
 
 ### Configuration
 
-In `package.json` add `frontful.environment` property.
+In `package.json` add `frontful.environment` property. Configuration can be done in several ways as provided by [`frontful-config`](https://github.com/frontful/frontful-config), bellow are two examples.
 
-Value of `frontful.environment` property can be configuration object with property structure as described [here](https://github.com/frontful/frontful-environment/blob/master/config/index.default.js)
+Value of `frontful.environment` property can be configuration object with property structure as described in configuration [defaults/schema](https://github.com/frontful/frontful-environment/blob/master/config/index.default.js)
 ```javascript
 // package.json
 {
@@ -99,7 +103,7 @@ Value of `frontful.environment` property can be configuration object with proper
   }
 }
 ```
-Value of `frontful.environment` property can be path to ES5 `.js` file that provides configuration
+Value of `frontful.environment` property can also be path to ES5 `.js` file that provides configuration
 ```javascript
 // package.json
 {
@@ -115,29 +119,23 @@ module.exports = {
 }
 ```
 
-#### Assets
+#### Babel configuration
 
-Assets can be referenced in few ways
-  - By absolute asset path; Mount asset folder and reference asset by its mounted path
-  - By importing asset (svg, png, jpg, jpeg, gif, ico), extension must be included
-  ```javascript
-  import image from './image.png'
-  export default () => (
-    <img src={image} />
-  )
-  ```
-  If asset is less than 1k in size, it will be inlined
-  - By using relative path in CSS
-  ```css
-  .container {
-    background-image: url(./image.png);
-  }
-  ```
-  If asset is less than 1k in size, it will be inlined
+`frontful-environment` uses `babel-preset-frontful` as its Babel preset. To customize babel preset refer to [`babel-preset-frontful` Configuration](https://github.com/frontful/babel-preset-frontful#configuration)
 
-#### Bundle
+#### Webpack configuration
 
-To get build bundle file path use `environment.bundle` object
+To configure Webpack, refer to `server.webpack` and `browser.webpack` properties in configuration [defaults/schema](https://github.com/frontful/frontful-environment/blob/master/config/index.default.js). Both have two additional properties
+
+- `options` - options that will be passed to [provider/webpack/browser](https://github.com/frontful/frontful-environment/tree/master/provider/webpack/browser) or [provider/webpack/server](https://github.com/frontful/frontful-environment/tree/master/provider/webpack/server). Keep in mind that these options are not Webpack options but ones accepted by provider factory functions.
+- `config` - fully formed Webpack configuration that can be created manually or by using [`frontful-environment/provider/webpack/browser`](https://github.com/frontful/frontful-environment/tree/master/provider/webpack/browser) or [`frontful-environment/provider/webpack/server`](https://github.com/frontful/frontful-environment/tree/master/provider/webpack/server) factory functions
+
+
+### Utilities
+
+#### `bundle`
+
+To get build bundle absolute mount path use `environment.bundle` utility object
 ```javascript
 import environment from 'frontful-environment'
 const bundle = environment.bundle
@@ -156,51 +154,11 @@ const html = `
 `
 ```
 
-#### CSS support
+#### `coldreload`
 
-`frontful-environment` supports standard CSS, SCSS, SASS, as well as CSS Modules for each of these style approaches.
+Depending on what part of code changes server, browser or both, respective bundles get rebuilt and page in the browser is automatically reloaded.
 
-##### Standard CSS, SCSS, SASS
-```javascript
-// Browser
-import `./style.scss`
-```
-
-##### CSS Modules
-```css
-/* Component.module.css */
-.container {
-  color: green;
-}
-```
-```javascript
-import style from `./Component.module.css`
-export default () => (
-  <div className={style.container}>
-    Hello CSS Modules
-  </div>
-)
-```
-**CSS Module support is added by adding `.module` prefix to style extension, e.g. `Component.module.css` or `Component.module.scss`**
-
-#### SVG support
-
-Apart from using SVG as any other asset by directly referencing or importing, SVG can be used in React app as React component.
-```javascript
-import Icon from './assets/icon.jsx.svg'
-export default () => (
-  <div>
-    <Icon />
-  </div>
-)
-```
-**For SVG to be interpreted as React component, `.svg` extension must be prefixed with `.jsx` e.g. `icon.jsx.svg`**
-
-#### Cold reload
-
-Depending on what part of code changes server and/or browser bundles get rebuilt and page in browser is automatically reloaded.
-
-By default client state is lost. To persist and revive application state use global `environment.coldreload` helper object
+By default client state is lost. To persist and revive application state use `environment.coldreload` utility object
 ```javascript
 // In browser
 import environment from 'frontful-environment'
@@ -223,11 +181,12 @@ if (environment.coldreload.state) {
   models.deserialize(environment.coldreload.state)
 }
 ```
-This mechanic should be compatible with any state management system that support serialization and deserialization, e.g Redux or Mobx
+This mechanic should be compatible with any state management system that support serialization and deserialization, e.g Redux or Mobx.
 
-#### Errors
+#### `error`
 
-`frontful-environment` provides cleaned up `Error` output for build errors. Same `Error` parsing can be added on server using global `environment.error` helper object
+`frontful-environment` provides cleaned up `Error` output for build errors. Same `Error` parsing can be had in your application by using `environment.error` utility object.  
+**This utility works only on server.**
 ```javascript
 import environment from 'frontful-environment'
 // Parse error
@@ -237,28 +196,101 @@ console.log(error.colorful)
 // Log error without colors
 console.log(error.string)
 
-// Format `Express` errors, mount `handler` `Express` middleware as las middleware in application
+// To format Express.js errors, mount error handler `Express` middleware as las middleware in application
 app.use(environment.error.getHandler())
 ```
 
-#### Misc
+#### `server`
 
+To access http server instance use `environment.server` getter utility
 ```javascript
 import environment from 'frontful-environment'
-// Get http server instance
-environment.server
-// Get http server listener instance
-environment.listener
+const server = environment.server
 ```
 
-#### Babel
+#### `listener`
 
-See [`babel-preset-frontful`](https://github.com/frontful/babel-preset-frontful)
+To access http servers listener instance use `environment.listener` getter utility
+```javascript
+import environment from 'frontful-environment'
+const listener = environment.listener
+```
 
-#### Webpack
+### Assets
 
-...
+Assets can be referenced in few ways.
 
-#### Package development
+By absolute path to assets. Mount asset folder, then reference asset on its absolute mounted path.
+```javascript
+import express from 'express'
+const app = express()
+app.use('/assets', express.static('assets', {maxAge: '7d'}))
+```
+```css
+.container {
+  background-image: url(/assets/image.png);
+}
+```
 
-See  [`frontful-common`](https://github.com/frontful/frontful-common)
+By importing asset in you Javascript code with extension included. Works with svg, png, jpg, jpeg, gif and ico assets.
+```javascript
+import image from './image.png'
+export default () => (
+  <img src={image} />
+)
+```
+
+By using relative path in CSS. Works with svg, png, jpg, jpeg, gif and ico assets.
+```css
+.container {
+  background-image: url(./image.png);
+}
+```
+
+If assets are references other than by its absolute path and its file size is less than 1kB its content will be inlined.
+
+### CSS
+
+`frontful-environment` supports standard CSS, SCSS, SASS, as well as CSS Modules for each of these style approaches.  
+Frontful infrastructure also provides ability to style application using CSS in JS approach, for more details refer to [`frontful-style`](https://github.com/frontful/frontful-style)
+
+#### Standard CSS, SCSS, SASS
+```javascript
+// Browser
+import `./style.scss`
+```
+
+##### CSS Modules
+
+CSS Module support is added by adding `.module` prefix to style extension, e.g. `Component.module.css` or `Component.module.scss`, importing CSS module in your Javascript code.
+```css
+/* Component.module.css */
+.container {
+  color: green;
+}
+```
+```javascript
+import style from `./Component.module.css`
+export default () => (
+  <div className={style.container}>
+    Hello CSS Modules
+  </div>
+)
+```
+
+### SVG
+
+Apart from using SVG as any other asset by directly referencing or importing it, SVG can be used in React app as React component.  
+**For SVG to be interpreted as React component, `.svg` extension must be prefixed with `.jsx` e.g. `icon.jsx.svg`**
+```javascript
+import Icon from './assets/icon.jsx.svg'
+export default () => (
+  <div>
+    <Icon />
+  </div>
+)
+```
+
+### Package development assist
+
+For more details on package development refer to [package development assist](https://github.com/frontful/frontful-common#package-development-assist)
