@@ -16,7 +16,7 @@ module.exports = function getErrorHandler(options) {
           res.send(`<pre style="color: red;">${error.string}</pre>`)
         }
         else if (req.accepts('json')) {
-          res.json({error: error.string})
+          res.json({error: error.details})
         }
         else {
           res.send(error.string)

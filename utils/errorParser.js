@@ -2,7 +2,8 @@ const chalk = require('chalk')
 const stripAnsi = require('strip-ansi')
 
 module.exports = function errorParser(e) {
-  let result = []
+  let result = [], where, what, how
+  
   try {
     const stack = e.stack
       .replace(/^.*\n/i, '')
@@ -15,13 +16,15 @@ module.exports = function errorParser(e) {
           .replace(/:(\d+:\d+)/gi, ' ($1)')
       })
 
+    where = `ERROR in ${stack.splice(0, 1)}`
+    what = `${e.name}: ${e.message}`
+    how = stack.map((item) => ` @ ${item}`).join('\n')
+
     result.push('')
-    result.push(chalk.red.bold(`ERROR in ${stack.splice(0, 1)}`))
-    result.push(chalk.red.bold(`${e.name}: ${e.message}`))
+    result.push(chalk.red.bold(where))
+    result.push(chalk.red.bold(what))
     result.push('')
-    stack.forEach((item) => {
-      result.push(` @ ${item}`)
-    })
+    result.push(how)
     result.push('')
   }
   catch(_e) {
@@ -32,6 +35,11 @@ module.exports = function errorParser(e) {
 
   return {
     colorful: joined,
-    string: stripAnsi(joined)
+    string: stripAnsi(joined),
+    details: {
+      where,
+      what,
+      how,
+    }
   }
 }
