@@ -1,6 +1,7 @@
 # <a href="https://github.com/frontful/frontful-environment"><img heigth="75" src="http://www.frontful.com/assets/packages/environment.png" alt="Frontful Environment" /></a>
 
-`frontful-environment` is packaged provider of environment setup, scripts and developer utilities for server and browser Javascript application development. It's environment setup provider for [Frontful](https://github.com/frontful) infrastructure.
+`frontful-environment` is packaged provider of environment setup, scripts and developer utilities for server and browser Javascript application development. It's environment setup provider for [Frontful](https://github.com/frontful) infrastructure.  
+Reference integration can be found in [`frontful-todomvc`](https://github.com/frontful/frontful-todomvc) application.
 
 Configuration of modern javascript applications using [Babel](https://babeljs.io/) and [Webpack](https://webpack.js.org/) can be fun and exciting, it can also be time consuming and somewhat overwhelming. `frontful-environment` is packaged abstraction on top of Babel, Webpack and other great tools to provide simple yet configurable environment setup with essential features, good developer experience, abstraction and isolation. `frontful-environment` can streamline application development environment setup and help to focus on feature implementation instead of Javascript DevOps.
 
