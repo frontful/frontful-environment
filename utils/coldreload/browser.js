@@ -5,7 +5,9 @@ if (process.env.NODE_ENV !== 'production') {
 
   Coldreload = class {
     constructor() {
-      this.socket = socketio()
+      this.socket = socketio('/', {
+        path: '/frontful-coldreload',
+      })
 
       this.socket.on('connect', () => {
         this.log('Server connected')

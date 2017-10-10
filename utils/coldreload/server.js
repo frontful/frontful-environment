@@ -17,7 +17,9 @@ if (process.env.NODE_ENV !== 'production') {
     }
 
     start(server) {
-      this.socket = socketio(server)
+      this.socket = socketio(server, {
+        path: '/frontful-coldreload',
+      })
 
       this.socket.on('connection', (browser) => {
         this.log('Browser connected')

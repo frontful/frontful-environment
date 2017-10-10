@@ -21,7 +21,7 @@ module.exports = function getAssetHandler(options) {
         const filename = resolve(path, url.pathname.replace(pathPublic, ''))
         var content = options.fs.readFileSync(filename)
         compressor(req, res, () => {})
-        res.setHeader("Content-Type", mime.lookup(filename))
+        res.setHeader("Content-Type", mime.getType(filename))
         res.statusCode = 200
         res.end(content)
       }
@@ -30,6 +30,7 @@ module.exports = function getAssetHandler(options) {
       }
     }
     catch(error) {
+      console.log(error)
       next()
     }
   }
