@@ -12,9 +12,7 @@ function optimizeSvg () {
     }]
   })
   return function (content) {
-    return new Promise((resolve, reject) =>
-      svgo.optimize(content, ({error, data}) => error ? reject(error) : resolve(data))
-    )
+    return svgo.optimize(content).then((result) => result.data)
   }
 }
 
