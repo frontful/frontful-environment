@@ -1,4 +1,4 @@
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 function cssLoader(modules) {
   return {
@@ -30,55 +30,50 @@ module.exports = function(options) {
   return [
     {
       test: new RegExp(`^((?!\\.module).)*\\.css$`),
-      use: options.browser ? ExtractTextPlugin.extract({
-        use: [
-          cssLoader(),
-          postcssLoader(),
-        ]
-      }) : 'null-loader',
+      use: options.browser ? [
+        MiniCssExtractPlugin.loader,
+        cssLoader(),
+        postcssLoader(),
+      ] : 'null-loader',
     },
     {
       test: new RegExp(`^((?!\\.module).)*\\.pcss$`),
-      use: options.browser ? ExtractTextPlugin.extract({
-        use: [
-          cssLoader(),
-          postcssLoader({
-            parser: 'postcss-scss'
-          }),
-        ]
-      }) : 'null-loader',
+      use: options.browser ? [
+        MiniCssExtractPlugin.loader,
+        cssLoader(),
+        postcssLoader({
+          parser: 'postcss-scss'
+        }),
+      ] : 'null-loader',
     },
     {
       test: new RegExp(`^((?!\\.module).)*\\.scss$`),
-      use: options.browser ? ExtractTextPlugin.extract({
-        use: [
-          cssLoader(),
-          postcssLoader(),
-          `sass-loader`,
-        ]
-      }) : 'null-loader',
+      use: options.browser ? [
+        MiniCssExtractPlugin.loader,
+        cssLoader(),
+        postcssLoader(),
+        `sass-loader`,
+      ] : 'null-loader',
     },
     {
       test: new RegExp(`^((?!\\.module).)*\\.sass$`),
-      use: options.browser ? ExtractTextPlugin.extract({
-        use: [
-          cssLoader(),
-          postcssLoader(),
-          `sass-loader?indentedSyntax`,
-        ]
-      }) : 'null-loader',
+      use: options.browser ? [
+        MiniCssExtractPlugin.loader,
+        cssLoader(),
+        postcssLoader(),
+        `sass-loader?indentedSyntax`,
+      ] : 'null-loader',
     },
 
     // ----- CSS Modules -----
 
     {
       test: new RegExp(`\\.module\\.css$`),
-      use: options.browser ? ExtractTextPlugin.extract({
-        use: [
-          cssLoader(true),
-          postcssLoader(),
-        ]
-      }) : [
+      use: options.browser ? [
+        MiniCssExtractPlugin.loader,
+        cssLoader(true),
+        postcssLoader(),
+      ] : [
         require.resolve('./cssModuleMappingLoader.js'),
         cssLoader(true),
         postcssLoader(),
@@ -86,14 +81,13 @@ module.exports = function(options) {
     },
     {
       test: new RegExp(`\\.module\\.pcss$`),
-      use: options.browser ? ExtractTextPlugin.extract({
-        use: [
-          cssLoader(true),
-          postcssLoader({
-            parser: 'postcss-scss'
-          }),
-        ]
-      }) : [
+      use: options.browser ? [
+        MiniCssExtractPlugin.loader,
+        cssLoader(true),
+        postcssLoader({
+          parser: 'postcss-scss'
+        }),
+      ] : [
         require.resolve('./cssModuleMappingLoader.js'),
         cssLoader(true),
         postcssLoader({
@@ -103,13 +97,12 @@ module.exports = function(options) {
     },
     {
       test: new RegExp(`\\.module\\.scss$`),
-      use: options.browser ? ExtractTextPlugin.extract({
-        use: [
-          cssLoader(true),
-          postcssLoader(),
-          `sass-loader`,
-        ]
-      }) : [
+      use: options.browser ? [
+        MiniCssExtractPlugin.loader,
+        cssLoader(true),
+        postcssLoader(),
+        `sass-loader`,
+      ] : [
         require.resolve('./cssModuleMappingLoader.js'),
         cssLoader(true),
         postcssLoader(),
@@ -118,13 +111,12 @@ module.exports = function(options) {
     },
     {
       test: new RegExp(`\\.module\\.sass$`),
-      use: options.browser ? ExtractTextPlugin.extract({
-        use: [
-          cssLoader(true),
-          postcssLoader(),
-          `sass-loader?indentedSyntax`,
-        ]
-      }) : [
+      use: options.browser ? [
+        MiniCssExtractPlugin.loader,
+        cssLoader(true),
+        postcssLoader(),
+        `sass-loader?indentedSyntax`,
+      ] : [
         require.resolve('./cssModuleMappingLoader.js'),
         cssLoader(true),
         postcssLoader(),

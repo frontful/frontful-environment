@@ -1,4 +1,5 @@
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const hash = require('../utils/hash')
 const path = require('path')
 const rulesAssets = require('../utils/rules.assets')
@@ -17,6 +18,7 @@ module.exports = function provider(options) {
   const cwd = process.cwd()
 
   return {
+    mode: 'production',
     cache: options.cache,
     context: cwd,
     devtool: options.sourceMaps && 'source-map',
@@ -38,10 +40,29 @@ module.exports = function provider(options) {
       filename: `${hash}.[name].js`,
       publicPath: '/assets/',
     },
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          vendor: {
+            chunks: 'initial',
+            name: 'vendor',
+            enforce: true,
+            test(module) {
+              return module.context && module.context.indexOf('node_modules') >= 0
+            },
+          },
+        },
+      },
+      minimizer: [
+        new UglifyJSPlugin({
+          uglifyOptions: {},
+          sourceMap: options.sourceMaps,
+        }),
+      ],
+    },
     plugins: [
-      new ExtractTextPlugin({
+      new MiniCssExtractPlugin({
         filename: `${hash}.[name].css`,
-        allChunks: true,
       }),
       new webpack.optimize.OccurrenceOrderPlugin(),
       new webpack.DefinePlugin({
@@ -49,23 +70,6 @@ module.exports = function provider(options) {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV),
           IS_BROWSER: JSON.stringify(true),
         },
-      }),
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor',
-        minChunks(module) {
-          return module.context && module.context.indexOf('node_modules') >= 0
-        },
-      }),
-      new webpack.optimize.UglifyJsPlugin({
-        compress: {
-          screw_ie8: true,
-          warnings: false,
-        },
-        output: {
-          comments: false,
-          screw_ie8: true,
-        },
-        sourceMap: options.sourceMaps,
       }),
       new webpack.LoaderOptionsPlugin({
         options: {

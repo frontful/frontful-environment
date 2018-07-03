@@ -6,9 +6,9 @@ const commonConfig = require('frontful-common/config')
 const config = require('../../config')
 const errorParser = require('../../utils/errorParser')
 const fs = require('fs')
-const requireFile = require('../../utils/requireFile')
 const path = require('path')
 const printStats = require('../../utils/printStats')
+const requireFile = require('../../utils/requireFile')
 const server = require('../../utils/server')
 const {deferred} = require('frontful-utils')
 
@@ -158,7 +158,7 @@ module.exports = class Development {
       require('frontful-config')
       require('../../utils/coldreload/server')
 
-      this.server.filename = path.resolve(config.server.webpack.output.path, stats[0].compilation.entrypoints.server.chunks[0].files[0])
+      this.server.filename = path.resolve(config.server.webpack.output.path, stats[0].compilation.entrypoints.get('server').chunks[0].files[0])
       this.server.requestHandler = requireFile(this.server.filename, {fs: this.fs})
 
       const httpServer = server((req, res) => this.server.requestHandler(req, res), {

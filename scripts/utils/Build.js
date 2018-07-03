@@ -51,6 +51,13 @@ module.exports = class Build {
         var requestHandler = require('./server.js');
         server(requestHandler, {assets: ${config.server.assets.toString()}});
       `)
+
+      const statsPath = path.resolve(process.cwd(), './stats')
+      const statsBuildPath = path.resolve(process.cwd(), './stats/build')
+      if (!fs.existsSync(statsPath)) fs.mkdirSync(statsPath)
+      if (!fs.existsSync(statsBuildPath)) fs.mkdirSync(statsBuildPath)
+      fs.writeFileSync(path.resolve(statsBuildPath, './server.json'), JSON.stringify(serverStats.toJson('normal')))
+      fs.writeFileSync(path.resolve(statsBuildPath, './browser.json'), JSON.stringify(browserStats.toJson('normal')))
     }).catch((error) => {
       printStats(true, error)
     })

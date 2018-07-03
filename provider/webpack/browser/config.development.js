@@ -1,4 +1,4 @@
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const hash = require('../utils/hash')
 const path = require('path')
 const rulesAssets = require('../utils/rules.assets')
@@ -17,6 +17,7 @@ module.exports = function provider(options) {
   const cwd = process.cwd()
 
   return {
+    mode: 'development',
     cache: options.cache,
     context: cwd,
     devtool: options.sourceMaps && 'eval-source-map',
@@ -38,10 +39,23 @@ module.exports = function provider(options) {
       filename: `${hash}.[name].js`,
       publicPath: '/assets/',
     },
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          vendor: {
+            chunks: 'initial',
+            name: 'vendor',
+            enforce: true,
+            test(module) {
+              return module.context && module.context.indexOf('node_modules') >= 0
+            },
+          },
+        },
+      },
+    },
     plugins: [
-      new ExtractTextPlugin({
+      new MiniCssExtractPlugin({
         filename: `${hash}.[name].css`,
-        allChunks: true,
       }),
       new webpack.optimize.OccurrenceOrderPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
@@ -49,12 +63,6 @@ module.exports = function provider(options) {
         'process.env': {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV),
           IS_BROWSER: JSON.stringify(true),
-        },
-      }),
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor',
-        minChunks(module) {
-          return module.context && module.context.indexOf('node_modules') >= 0
         },
       }),
       new webpack.LoaderOptionsPlugin({

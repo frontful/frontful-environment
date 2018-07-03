@@ -4,12 +4,11 @@ module.exports = function (assetsByChunkName) {
 
   const bundle = {
     js: {
-      main: assetsByChunkName.main[0] && `/assets/${assetsByChunkName.main[0]}`,
-      vendor: assetsByChunkName.vendor[0] && `/assets/${assetsByChunkName.vendor[0]}`,
+      main: `/assets/${assetsByChunkName.main.find((fileName) => /\.main\.js$/gi.test(fileName))}`,
+      vendor: `/assets/${assetsByChunkName.vendor.find((fileName) => /\.vendor\.js$/gi.test(fileName))}`,
     },
     css: {
-      main: assetsByChunkName.main[1] && `/assets/${assetsByChunkName.main[1]}`,
-      vendor: assetsByChunkName.vendor[1] && `/assets/${assetsByChunkName.vendor[1]}`,
+      main: `/assets/${assetsByChunkName.main.find((fileName) => /\.main\.css$/gi.test(fileName))}`,
     }
   }
 
