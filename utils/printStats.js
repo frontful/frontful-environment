@@ -59,8 +59,12 @@ module.exports = function printStats(printSize, items) {
     console.log()
     Object.keys(stats.folder).forEach((folder) => {
       console.log(`${chalk.bold.white(folder)}`)
+      const files = []
       stats.folder[folder].forEach((item) => {
-        console.log(` ${printSize ? chalk.gray(pad(maxSizeLength, item.size) + ' ') : ''}${chalk.green(item.file)}`)
+        if (files.indexOf(item.file) === -1) {
+          console.log(` ${printSize ? chalk.gray(pad(maxSizeLength, item.size) + ' ') : ''}${chalk.green(item.file)}`)
+          files.push(item.file)
+        }
       })
     })
   }
