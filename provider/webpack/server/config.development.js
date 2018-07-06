@@ -17,6 +17,7 @@ module.exports = function provider(options) {
   const cwd = process.cwd()
 
   return {
+    mode: 'development',
     cache: options.cache,
     context: cwd,
     devtool: options.sourceMaps && 'source-map',
