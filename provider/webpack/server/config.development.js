@@ -22,7 +22,10 @@ module.exports = function provider(options) {
     context: cwd,
     devtool: options.sourceMaps && 'source-map',
     externals: [nodeExternals({
-      whitelist: commonConfig.packages
+      whitelist: commonConfig.packages.map(function(pkg) {
+        return new RegExp(pkg, 'gi')
+      }),
+      includeAbsolutePaths: true,
     })],
     target: 'node',
     stats: {
@@ -73,6 +76,7 @@ module.exports = function provider(options) {
         cwd + '/node_modules',
         'node_modules',
       ],
+      alias: commonConfig.alias,
     },
   }
 }
