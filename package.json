@@ -1,6 +1,6 @@
 {
   "name": "frontful-environment",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "private": true,
   "description": "Environment abstraction provider for efficient and sustainable Javascript application development",
   "license": "MIT",
@@ -17,6 +17,9 @@
     "deploy": "yarn test && babel-preset-frontful deploy",
     "test": "yarn test:eslint",
     "test:eslint": "node ./node_modules/eslint/bin/eslint.js --max-warnings 0 ."
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
     "autoprefixer": "^8.6.4",
