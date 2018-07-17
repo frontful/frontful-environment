@@ -5,7 +5,7 @@ function cssLoader(modules) {
     loader:`css-loader`,
     options: {
       modules: modules || false,
-      minimize: false,
+      // minimize: false,
       context: process.cwd(),
       importLoaders: modules ? 1 : 0,
       localIdentName: process.env.NODE_ENV === 'production' ? '[hash:base64:5]' : '[path]___[name]__[local]___[hash:base64:5]'

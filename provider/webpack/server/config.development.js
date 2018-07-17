@@ -22,9 +22,9 @@ module.exports = function provider(options) {
     context: cwd,
     devtool: options.sourceMaps && 'source-map',
     externals: [nodeExternals({
-      whitelist: commonConfig.packages.map(function(pkg) {
-        return new RegExp(pkg, 'gi')
-      }),
+      whitelist: (module) => {
+        return commonConfig.packages.find((name) => module.includes(name))
+      },
       includeAbsolutePaths: true,
     })],
     target: 'node',
