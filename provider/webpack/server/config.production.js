@@ -1,4 +1,5 @@
 const commonConfig = require('frontful-common/config')
+const findWorkspaceRoot = require('find-yarn-workspace-root')
 const nodeExternals = require('webpack-node-externals')
 const path = require('path')
 const rulesAssets = require('../utils/rules.assets')
@@ -22,10 +23,11 @@ module.exports = function provider(options) {
     context: cwd,
     devtool: options.sourceMaps && 'source-map',
     externals: [nodeExternals({
+      modulesDir: findWorkspaceRoot(cwd) || undefined,
+      includeAbsolutePaths: true,
       whitelist: (module) => {
         return commonConfig.packages.find((name) => module.includes(name))
       },
-      includeAbsolutePaths: true,
     })],
     target: 'node',
     stats: {
@@ -45,7 +47,7 @@ module.exports = function provider(options) {
       filename: `../../server/[name].js`,
       publicPath: '/assets/',
       libraryTarget: 'commonjs-module',
-      devtoolModuleFilenameTemplate: '[absolute-resource-path]',
+      devtoolModuleFilenameTemplate: `${cwd}/[resource-path]`,
     },
     plugins: [
       new webpack.BannerPlugin({
