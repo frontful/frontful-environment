@@ -44,7 +44,8 @@ module.exports = function provider(options) {
       path: path.resolve(cwd, './build/browser/assets/'),
       filename: `../../server/[name].js`,
       publicPath: '/assets/',
-      libraryTarget: "commonjs-module",
+      libraryTarget: 'commonjs-module',
+      devtoolModuleFilenameTemplate: '[absolute-resource-path]',
     },
     plugins: [
       new webpack.BannerPlugin({

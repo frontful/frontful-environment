@@ -44,6 +44,7 @@ module.exports = function provider(options) {
       filename: `../../server/[name].js`,
       publicPath: '/assets/',
       libraryTarget: 'commonjs-module',
+      devtoolModuleFilenameTemplate: '[absolute-resource-path]',
     },
     plugins: [
       new webpack.optimize.OccurrenceOrderPlugin(),
