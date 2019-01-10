@@ -1096,9 +1096,9 @@ babel-preset-flow@^6.23.0:
     babel-plugin-transform-flow-strip-types "^6.22.0"
 
 babel-preset-frontful@3.x:
-  version "3.0.22"
-  resolved "https://registry.yarnpkg.com/babel-preset-frontful/-/babel-preset-frontful-3.0.22.tgz#809c134e55e0d6ab6d50dbe378a14307e3e894d9"
-  integrity sha512-ZI99VsB8JdCu+fpHw4wbxX/O02R1ArVhvfBDrlBHVXpC+UL5T7JPMZS+nv+9Mk5HzsxmpChI3FynDJmS3alUpA==
+  version "3.0.23"
+  resolved "https://registry.yarnpkg.com/babel-preset-frontful/-/babel-preset-frontful-3.0.23.tgz#84e78d0571b3da8c3be72b65a7f86c113d3abf82"
+  integrity sha512-lJIIndQIp6vg2GG+9f+iLggwmN40I7NILO02NFKK0+kZZEzV4QEQaPHhFxmW6OsooOZI7HNBJ2inlXo6O6pOcg==
   dependencies:
     babel-plugin-add-module-exports "^1.0.0"
     babel-plugin-transform-class-properties "^6.24.1"

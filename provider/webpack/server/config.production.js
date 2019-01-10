@@ -16,6 +16,7 @@ module.exports = function provider(options) {
   }, options)
 
   const cwd = process.cwd()
+  const workspaceNodeModules = `${findWorkspaceRoot(cwd)}/node_modules` || undefined
 
   return {
     mode: 'production',
@@ -23,7 +24,7 @@ module.exports = function provider(options) {
     context: cwd,
     devtool: options.sourceMaps && 'source-map',
     externals: [nodeExternals({
-      modulesDir: findWorkspaceRoot(cwd) || undefined,
+      modulesDir: workspaceNodeModules,
       includeAbsolutePaths: true,
       whitelist: (module) => {
         return commonConfig.packages.find((name) => module.includes(name))
@@ -47,7 +48,7 @@ module.exports = function provider(options) {
       filename: `../../server/[name].js`,
       publicPath: '/assets/',
       libraryTarget: 'commonjs-module',
-      devtoolModuleFilenameTemplate: `${cwd}/[resource-path]`,
+      // devtoolModuleFilenameTemplate: `${cwd}/[resource-path]`,
     },
     plugins: [
       new webpack.BannerPlugin({
@@ -81,7 +82,7 @@ module.exports = function provider(options) {
       mainFields: ['jsnext:main', 'browser', 'main'],
       symlinks: false,
       modules: [
-        cwd + '/node_modules',
+        workspaceNodeModules || (cwd + '/node_modules'),
         'node_modules',
       ],
       alias: commonConfig.alias,

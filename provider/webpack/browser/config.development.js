@@ -1,4 +1,5 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const findWorkspaceRoot = require('find-yarn-workspace-root')
 const hash = require('../utils/hash')
 const path = require('path')
 const rulesAssets = require('../utils/rules.assets')
@@ -15,6 +16,7 @@ module.exports = function provider(options) {
   }, options)
 
   const cwd = process.cwd()
+  const workspaceNodeModules = `${findWorkspaceRoot(cwd)}/node_modules` || undefined
 
   return {
     mode: 'development',
@@ -94,7 +96,7 @@ module.exports = function provider(options) {
       mainFields: ['jsnext:main', 'browser', 'main'],
       symlinks: true,
       modules: [
-        cwd + '/node_modules',
+        workspaceNodeModules || (cwd + '/node_modules'),
         'node_modules',
       ],
     },
