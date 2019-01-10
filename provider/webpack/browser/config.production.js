@@ -17,7 +17,8 @@ module.exports = function provider(options) {
   }, options)
 
   const cwd = process.cwd()
-  const workspaceNodeModules = `${findWorkspaceRoot(cwd)}/node_modules` || undefined
+  const workspaceRoot = findWorkspaceRoot(cwd)
+  const workspaceNodeModules = workspaceRoot ? `${workspaceRoot}/node_modules` : undefined
 
   return {
     mode: 'production',
